@@ -1,0 +1,591 @@
+/* src/styles/pages/teacher/dashboard.css */
+
+.teacher-dashboard {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+}
+
+/* Loading state */
+.dashboard-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 3px solid rgba(136, 89, 163, 0.2);
+    border-top-color: var(--primary);
+    animation: spin 1s infinite linear;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Dashboard header */
+.dashboard-header {
+    margin-bottom: 2rem;
+}
+
+.dashboard-header h1 {
+    font-size: 2.2rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.header-subtitle {
+    font-size: 1.1rem;
+    color: #666;
+}
+
+/* Stats grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background-color: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+    margin-right: 1rem;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 32px;
+}
+
+.students-icon {
+    background-color: rgba(33, 150, 243, 0.1);
+    background-image: url('/assets/icons/students.svg');
+}
+
+.sessions-icon {
+    background-color: rgba(156, 39, 176, 0.1);
+    background-image: url('/assets/icons/sessions.svg');
+}
+
+.completion-icon {
+    background-color: rgba(76, 175, 80, 0.1);
+    background-image: url('/assets/icons/completion.svg');
+}
+
+.rating-icon {
+    background-color: rgba(255, 152, 0, 0.1);
+    background-image: url('/assets/icons/rating.svg');
+}
+
+.stat-content h3 {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 0 0 0.5rem;
+    font-weight: 500;
+}
+
+.stat-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #333;
+    margin: 0;
+}
+
+/* Main dashboard content */
+.dashboard-main {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 1.5rem;
+}
+
+.dashboard-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Dashboard cards */
+.dashboard-card {
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.card-header h2 {
+    font-size: 1.3rem;
+    margin: 0;
+    color: #333;
+}
+
+.view-all {
+    font-size: 0.9rem;
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.view-all:hover {
+    text-decoration: underline;
+}
+
+/* Empty state */
+.empty-state {
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    color: #666;
+}
+
+.empty-state p {
+    margin: 0 0 1rem;
+    font-size: 1rem;
+}
+
+.action-button {
+    display: inline-block;
+    padding: 0.7rem 1.2rem;
+    background-color: var(--primary);
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+.action-button:hover {
+    background-color: var(--primary-dark);
+}
+
+/* Upcoming sessions */
+.sessions-list {
+    padding: 0.5rem 0;
+}
+
+.session-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.session-item:last-child {
+    border-bottom: none;
+}
+
+.session-info {
+    flex: 1;
+}
+
+.session-meta {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.session-day {
+    font-weight: 600;
+    color: #333;
+}
+
+.session-time {
+    color: #666;
+}
+
+.session-subject {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.session-student {
+    display: flex;
+    align-items: center;
+}
+
+.student-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+    object-fit: cover;
+}
+
+.session-status {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.7rem;
+}
+
+.status-badge {
+    padding: 0.3rem 0.7rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.status-badge.scheduled {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: #4CAF50;
+}
+
+.status-badge.pending {
+    background-color: rgba(255, 152, 0, 0.1);
+    color: #FF9800;
+}
+
+.status-badge.cancelled {
+    background-color: rgba(244, 67, 54, 0.1);
+    color: #F44336;
+}
+
+.session-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.session-action {
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.2s ease;
+}
+
+.session-action.enter {
+    background-color: var(--primary);
+    color: white;
+}
+
+.session-action.enter:hover {
+    background-color: var(--primary-dark);
+}
+
+.session-action.details {
+    background-color: transparent;
+    border: 1px solid #ddd;
+    color: #666;
+}
+
+.session-action.details:hover {
+    background-color: #f5f5f5;
+}
+
+/* Earnings overview */
+.earnings-content {
+    padding: 1.5rem;
+}
+
+.earnings-period {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.period-label {
+    font-size: 1rem;
+    color: #666;
+}
+
+.period-amount {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #333;
+}
+
+.period-sessions {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.earnings-pending {
+    margin-bottom: 1.5rem;
+}
+
+.pending-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.7rem;
+}
+
+.pending-header h3 {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #666;
+    margin: 0;
+}
+
+.pending-amount {
+    font-weight: 600;
+    color: #FF9800;
+}
+
+.progress-bar {
+    height: 8px;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    background-color: var(--primary);
+    border-radius: 4px;
+}
+
+.earnings-button {
+    display: block;
+    padding: 0.8rem;
+    text-align: center;
+    background-color: white;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+.earnings-button:hover {
+    background-color: rgba(136, 89, 163, 0.05);
+}
+
+/* Recent students */
+.students-list {
+    padding: 0.5rem 0;
+}
+
+.student-item {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.student-item:last-child {
+    border-bottom: none;
+}
+
+.student-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.8rem;
+}
+
+.student-details {
+    flex: 1;
+}
+
+.student-name {
+    display: block;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.2rem;
+}
+
+.student-meta {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.student-subjects {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.8rem;
+}
+
+.subject-tag {
+    padding: 0.3rem 0.7rem;
+    background-color: #f5f0f9;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: var(--primary);
+}
+
+.student-actions {
+    display: flex;
+    gap: 0.8rem;
+}
+
+.student-action {
+    flex: 1;
+    padding: 0.5rem 0;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.2s ease;
+}
+
+.student-action.message {
+    background-color: white;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+}
+
+.student-action.message:hover {
+    background-color: rgba(136, 89, 163, 0.05);
+}
+
+.student-action.schedule {
+    background-color: var(--primary);
+    color: white;
+}
+
+.student-action.schedule:hover {
+    background-color: var(--primary-dark);
+}
+
+/* Quick actions */
+.quick-actions h2 {
+    padding: 1.5rem 1.5rem 1rem;
+    margin: 0;
+    font-size: 1.3rem;
+    color: #333;
+}
+
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    padding: 0 1.5rem 1.5rem;
+}
+
+.action-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 1.5rem;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.action-card:hover {
+    background-color: #f5f0f9;
+    transform: translateY(-3px);
+}
+
+.action-icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 0.8rem;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.schedule-icon {
+    background-image: url('/assets/icons/schedule.svg');
+}
+
+.content-icon {
+    background-image: url('/assets/icons/content.svg');
+}
+
+.profile-icon {
+    background-image: url('/assets/icons/profile.svg');
+}
+
+.support-icon {
+    background-image: url('/assets/icons/support.svg');
+}
+
+.action-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #333;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .dashboard-main {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .session-item,
+    .student-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .session-status,
+    .student-actions {
+        align-items: flex-start;
+        margin-top: 1rem;
+        width: 100%;
+    }
+
+    .session-actions,
+    .student-actions {
+        width: 100%;
+    }
+
+    .session-action,
+    .student-action {
+        flex: 1;
+        text-align: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .actions-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .earnings-period {
+        flex-direction: column;
+        gap: 0.3rem;
+        align-items: flex-start;
+    }
+}
