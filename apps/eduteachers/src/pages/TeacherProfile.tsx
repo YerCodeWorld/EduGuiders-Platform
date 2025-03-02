@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTeachers } from '../contexts/TeachersContext.tsx';
-import { useAuth, UserRole } from '../../../eduguiders/src/contexts/AuthContext';
+import { useAuth, UserRole } from '../../../../packages/ui/src/contexts/AuthContext';
 import ProfileHeader from '../components/profile/ProfileHeader';
 import ProfileNavigation from '../components/profile/ProfileNavigation';
 import Availability from '../components/profile/Availability';

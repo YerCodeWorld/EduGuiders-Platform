@@ -1,7 +1,7 @@
 // src/pages/TeacherDashboard.tsx
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth, UserRole } from '../contexts/AuthContext';
+import { useAuth, UserRole } from '../../../../packages/ui/src/contexts/AuthContext';
 import CarouselBanner from '../components/home/CarouselBanner';
 import Tiles from '../components/home/Tiles';
 import Testimonials from '../components/home/Testimonials';

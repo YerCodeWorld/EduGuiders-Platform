@@ -1,6 +1,6 @@
 // src/components/profile/ProfileHeader.tsx
 import React, { useState } from 'react';
-import { useTeachers } from '../../contexts/TeachersContext';
+import { useTeachers } from '@/contexts';
 import '../../styles/components/profile/profileHeader.css';
 
 interface ProfileHeaderProps {

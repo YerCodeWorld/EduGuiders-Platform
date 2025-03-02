@@ -1,7 +1,7 @@
 // src/components/features/teachers/TeacherCard.tsx
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth, UserRole } from '../../../contexts/AuthContext';
+import { useAuth, UserRole } from '../../../../../../packages/ui/src/contexts/AuthContext';
 import { getInitials } from '../../../methods.ts';
 import '../../../styles/features/teachers/teacherCard.css';
 

@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider, MainLayout, ProtectedRoute, UserRole } from '../../eduguiders/src/exports';
+import { AuthProvider, MainLayout, ProtectedRoute, UserRole } from '../../../packages/ui/src/exports';
 import { TeachersProvider } from "@/contexts";
 
 // Lazy-loaded pages

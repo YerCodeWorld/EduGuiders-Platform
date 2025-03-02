@@ -1,7 +1,7 @@
 // src/components/profile/Contact.tsx
 import React, { useState } from 'react';
 import { ContactInfo } from '@/types';
-import { useAuth } from '../../../../eduguiders/src/contexts/AuthContext';
+import { useAuth } from '@repo/ui/contexts/AuthContext';
 import '../../styles/components/profile/contact.css';
 
 interface ContactProps {

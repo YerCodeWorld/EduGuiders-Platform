@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { MainLayout } from '../../../eduguiders/src/exports';
+import { MainLayout } from '../../../../packages/ui/src/exports.ts';
 
 // Lazy load components
 const TeacherSelector = lazy(() => import('../pages/TeacherSelector'));

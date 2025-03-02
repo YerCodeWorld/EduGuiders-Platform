@@ -63,7 +63,7 @@ const Menu = ({ isOpen, onClose }: MenuProps) => {
                     <div className="role-menu">
                         <h3>Teacher</h3>
                         <ul>
-                            <li><Link to="/teacher/dashboard" onClick={onClose}>Dashboard</Link></li>
+                            <li><Link to="/teacher" onClick={onClose}>Dashboard</Link></li>
                             <li><Link to="/teacher/bookings" onClick={onClose}>My Bookings</Link></li>
                             <li><Link to="/teachers/${user.id}" onClick={onClose}>My Profile</Link></li>
                             <li><Link to="/teacher/content" onClick={onClose}>My Content</Link></li>
