@@ -1,0 +1,226 @@
+/* src/styles/components/profile/posts.css */
+
+.posts-section {
+    padding: 4rem 0;
+    background-color: var(--light);
+    margin-top: 3rem;
+}
+
+.posts-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.posts-header h2 {
+    font-size: 2rem;
+    margin-bottom: 0;
+    color: var(--dark);
+}
+
+.edit-posts-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: white;
+    border: 1px solid var(--light-gray);
+    border-radius: var(--border-radius-md);
+    font-size: 0.9rem;
+    color: var(--dark);
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.edit-posts-btn:hover {
+    background-color: var(--light-gray);
+}
+
+.section-intro {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2.5rem;
+}
+
+.section-intro p {
+    margin-bottom: 0;
+    font-size: 1.1rem;
+    color: var(--gray);
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.filter-btn {
+    background: none;
+    border: 1px solid var(--light-gray);
+    padding: 0.5rem 1.25rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    transition: var(--transition-fast);
+    cursor: pointer;
+}
+
+.filter-btn:hover {
+    background-color: var(--light-gray);
+}
+
+.filter-btn.active {
+    background-color: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.post-card {
+    background-color: white;
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-normal);
+}
+
+.post-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+}
+
+.post-image {
+    position: relative;
+    height: 180px;
+    overflow: hidden;
+}
+
+.post-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.post-card:hover .post-image img {
+    transform: scale(1.05);
+}
+
+.post-type {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.post-type i {
+    font-size: 1.25rem;
+    color: var(--primary);
+}
+
+.post-content {
+    padding: 1.5rem;
+}
+
+.post-date {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--gray);
+    margin-bottom: 0.5rem;
+}
+
+.post-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+    color: var(--dark);
+}
+
+.post-card p {
+    color: var(--gray);
+    font-size: 0.95rem;
+    margin-bottom: 1.25rem;
+}
+
+.post-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: var(--primary);
+}
+
+.post-link i {
+    transition: transform 0.3s ease;
+}
+
+.post-link:hover i {
+    transform: translateX(4px);
+}
+
+.posts-actions {
+    text-align: center;
+}
+
+.btn-secondary {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background-color: white;
+    color: var(--primary);
+    border: 1px solid var(--primary);
+    border-radius: var(--border-radius-md);
+    font-weight: 500;
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
+
+.btn-secondary:hover {
+    background-color: var(--light);
+}
+
+.no-posts {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 2rem;
+    color: var(--gray);
+    font-style: italic;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .posts-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .section-intro {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .posts-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .posts-grid {
+        grid-template-columns: 1fr;
+    }
+}

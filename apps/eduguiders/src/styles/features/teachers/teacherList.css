@@ -1,0 +1,184 @@
+/* src/styles/features/teachers/teacherList.css */
+
+.teacher-list-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem;
+}
+
+.list-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.list-header h2 {
+    font-size: 2.2rem;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+}
+
+.list-header p {
+    font-size: 1.1rem;
+    color: var(--gray);
+}
+
+.teacher-list-content {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 2rem;
+}
+
+/* Results section */
+.teacher-results {
+    display: flex;
+    flex-direction: column;
+}
+
+.results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--light-gray);
+}
+
+.results-count {
+    font-size: 0.9rem;
+    color: var(--gray);
+    margin: 0;
+}
+
+.sort-controls {
+    display: flex;
+    align-items: center;
+}
+
+.sort-controls label {
+    font-size: 0.9rem;
+    color: var(--gray);
+    margin-right: 0.5rem;
+}
+
+.sort-controls select {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--light-gray);
+    border-radius: var(--border-radius-md);
+    background-color: white;
+    font-size: 0.9rem;
+    color: var(--dark);
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+}
+
+.sort-controls select:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+/* Teacher grid */
+.teacher-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+}
+
+/* Loading state */
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 0;
+    text-align: center;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(136, 89, 163, 0.2);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 1s infinite linear;
+    margin-bottom: 1rem;
+}
+
+.loading-state p {
+    color: var(--gray);
+    font-size: 0.9rem;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Empty state */
+.empty-state {
+    text-align: center;
+    padding: 4rem 0;
+}
+
+.empty-state h3 {
+    font-size: 1.3rem;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    color: var(--gray);
+    margin-bottom: 1.5rem;
+}
+
+.reset-filters {
+    padding: 0.7rem 1.5rem;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-md);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+
+.reset-filters:hover {
+    background-color: var(--primary-dark);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .teacher-list-content {
+        grid-template-columns: 240px 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .teacher-list-content {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-sidebar {
+        margin-bottom: 2rem;
+    }
+
+    .teacher-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .results-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .teacher-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .list-header h2 {
+        font-size: 1.8rem;
+    }
+}

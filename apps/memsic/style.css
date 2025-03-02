@@ -1,0 +1,85 @@
+/* Body as the outer background */
+body {
+    padding: 20px; /* Space for the border effect */
+    background-image: url("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%3Fid%3DOIP.MgIoW64zMIR5AquZxMwlwQHaEk%26pid%3DApi&f=1&ipt=d090da6022cf04a32526916b5eda2638f950eb56dedd493b0ae9627c53dd804c&ipo=images");
+    margin: 0; /* Remove default margin */
+    box-sizing: border-box; /* Include padding in total size */
+    min-height: 100vh; /* Ensure body covers full viewport height */
+}
+
+.innerBody {
+    background: white;
+    padding: 20px;
+    max-width: 4800px; /* Limit the content width */
+    min-height: calc(100vh - 120px); /* Full height minus the body's padding */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); /* Optional shadow */
+    border-radius: 10px; /* Optional rounded corners */
+    display: flex; /* Optional: For centering content inside */
+    flex-direction: column; /* Optional: Align content vertically */
+    justify-content: flex-start; /* Optional: Start content at the top */
+}
+
+.superInnerBody {
+    border: 2px solid #9B7AB9;
+    padding: 20px;
+    max-width: 4800px; /* Limit the content width */
+    min-height: calc(100vh - 120px); /* Full height minus the body's padding */
+    display: flex; /* Optional: For centering content inside */
+    flex-direction: column; /* Optional: Align content vertically */
+    justify-content: flex-start; /* Optional: Start content at the top */
+}
+
+.title{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center; /* Centers text horizontally inside each block */
+    color: #746293;
+}
+
+.note-control {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #f9f9f9;
+    border: 2px solid #9B7AB9;
+    border-radius: 10px;
+    padding: 15px;
+    width: 150px;
+    margin: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.note-label {
+    font-size: 20px;
+    font-weight: bold;
+    color: #5C6AC4;
+    margin-bottom: 10px;
+}
+
+.play-button {
+    padding: 10px 20px;
+    background-color: #746293;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.play-button:hover {
+    background-color: #5C6AC4;
+}
+
+.controlBox{
+    display: flex;
+    flex-direction: row;
+    gap: 10px; /* Optional: Adds spacing between child elements */
+}
+
+.videoContainer{
+    padding: 40px;
+
+}

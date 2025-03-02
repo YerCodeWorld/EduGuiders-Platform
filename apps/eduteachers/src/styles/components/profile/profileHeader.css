@@ -1,0 +1,250 @@
+/* src/styles/components/profile/profileHeader.css */
+
+.profile-header {
+    position: relative;
+}
+
+.landscape-picture {
+    position: relative;
+    height: 30vh;
+    min-height: 200px;
+    background-size: cover;
+    background-position: center;
+}
+
+.overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,0.7));
+}
+
+.back-button {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-md);
+    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    z-index: 10;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.back-button:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.edit-landscape-btn {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-md);
+    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    z-index: 10;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.edit-landscape-btn:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.profile-personal {
+    display: flex;
+    align-items: flex-end;
+    margin-top: -80px;
+    margin-left: 2rem;
+    position: relative;
+    z-index: 2;
+}
+
+.profile-picture {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    border: 4px solid white;
+    background-size: cover;
+    background-position: center;
+    box-shadow: var(--shadow-md);
+    position: relative;
+}
+
+.edit-profile-pic-btn {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--primary);
+    color: white;
+    border: 3px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.edit-profile-pic-btn:hover {
+    background-color: var(--primary-dark);
+}
+
+.profile-name-container {
+    margin-left: 1.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.profile-name {
+    color: white;
+    font-size: 2.25rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    margin-bottom: 0.25rem;
+}
+
+.profile-title {
+    color: #f0f0f0;
+    font-size: 1.1rem;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    margin-bottom: 0.75rem;
+}
+
+.edit-profile-btn {
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-md);
+    padding: 0.5rem 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.edit-profile-btn:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.edit-name-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-width: 300px;
+}
+
+.edit-name-input,
+.edit-title-input {
+    padding: 0.5rem;
+    border: 1px solid var(--gray-light);
+    border-radius: var(--border-radius-md);
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+.edit-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.cancel-edit-btn,
+.save-edit-btn {
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius-md);
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.cancel-edit-btn {
+    background-color: white;
+    color: var(--dark);
+    border: 1px solid var(--gray-light);
+}
+
+.save-edit-btn {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+}
+
+.save-edit-btn:hover {
+    background-color: var(--primary-dark);
+}
+
+.cancel-edit-btn:hover {
+    background-color: var(--light);
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .profile-personal {
+        margin-left: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .landscape-picture {
+        height: 25vh;
+    }
+
+    .profile-personal {
+        flex-direction: column;
+        align-items: center;
+        margin-top: -70px;
+        margin-left: 0;
+        text-align: center;
+    }
+
+    .profile-picture {
+        margin-bottom: 1rem;
+        width: 140px;
+        height: 140px;
+    }
+
+    .profile-name-container {
+        margin-left: 0;
+        background-color: rgba(0, 0, 0, 0.7);
+        padding: 1rem;
+        border-radius: var(--border-radius-md);
+        margin-bottom: 1rem;
+    }
+
+    .profile-name {
+        font-size: 1.75rem;
+    }
+
+    .profile-title {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .profile-picture {
+        width: 120px;
+        height: 120px;
+    }
+
+    .profile-name {
+        font-size: 1.5rem;
+    }
+}
