@@ -1,6 +1,64 @@
 /* src/styles/global.css */
 /* Using the same variables as EduGuiders for consistency */
 
+:root {
+    /* Color variables */
+    --primary: #46B3A3; /* Aqua green */
+    --primary-dark: #3A9788; /* Deeper aqua green */
+
+    --primary-light: #f5f0f9;
+    --secondary: #2196f3;
+    --success: #4CAF50;
+    --warning: #FF9800;
+    --danger: #F44336;
+    --light: #f7f9fc;
+    --dark: #333333;
+    --gray: #666666;
+    --light-gray: #eeeeee;
+
+    /*Special color variables */
+    --gradient: #FF5599;
+    --gradient-dark: rgba(136, 89, 163, 0.8);
+
+    /* Typography */
+    --font-family: 'Source Sans Pro', 'Helvetica', sans-serif;
+    --font-size-base: 16px;
+    --line-height-base: 1.5;
+
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-xxl: 3rem;
+
+    /* Borders */
+    --border-radius-sm: 4px;
+    --border-radius-md: 6px;
+    --border-radius-lg: 10px;
+    --border-radius-xl: 12px;
+    --border-radius-pill: 50px;
+
+    /* Shadows */
+    --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.12);
+
+    /* Transitions */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+
+    /* Z-index layers */
+    --z-index-dropdown: 1000;
+    --z-index-sticky: 1020;
+    --z-index-fixed: 1030;
+    --z-index-modal-backdrop: 1040;
+    --z-index-modal: 1050;
+    --z-index-tooltip: 1060;
+}
+
 /* Reset and base styles */
 *, *::before, *::after {
     box-sizing: border-box;

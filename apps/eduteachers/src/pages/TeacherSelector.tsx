@@ -1,6 +1,6 @@
 // src/pages/TeacherSelector.tsx
 import React, { useState, useEffect } from 'react';
-import { useTeachers } from '../contexts/TeachersContext.tsx';
+import { useTeachers } from '../contexts/index.ts';
 import { TeacherCard } from '../components/TeacherCard';
 import TeacherFilters from '../components/TeacherFilters';
 import '../styles/pages/teacherSelector.css';
@@ -56,9 +56,11 @@ const TeacherSelector: React.FC = () => {
     }, []);
 
     // Handle search input change
+
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(e.target.value);
     };
+
 
     // Handle filter change
     const handleFilterChange = (value: string) => {
@@ -73,7 +75,7 @@ const TeacherSelector: React.FC = () => {
     return (
         <div className="teacher-list-container">
             <div className="list-header">
-                <h2>Find Your Perfect Teacher</h2>
+                <h2>Welcome to EduTeachers</h2>
                 <p>Browse our expert educators and find the right match for your learning needs</p>
             </div>
 

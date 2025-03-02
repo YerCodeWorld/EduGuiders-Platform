@@ -10,7 +10,7 @@ interface ContactProps {
     teacherName: string;
 }
 
-const Contact: React.FC<ContactProps> = ({ contact, teacherId, teacherName }) => {
+const Contact: React.FC<ContactProps> = ({ contact, teacherName }) => {
     const { user } = useAuth();
 
     // State for contact form

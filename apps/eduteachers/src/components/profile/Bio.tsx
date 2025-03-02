@@ -1,7 +1,7 @@
 // src/components/profile/Bio.tsx
 import React, { useState } from 'react';
 import { Bio as BioProp, ExpertiseArea } from '../../types';
-import { useTeachers } from '../../contexts/TeachersContext.tsx';
+import { useTeachers } from '@/contexts';
 import '../../styles/components/profile/bio.css';
 
 interface BioComponentProps {
@@ -75,6 +75,7 @@ const Bio: React.FC<BioComponentProps> = ({ bio, isEditable, teacherId }) => {
     // Update expertise area
     const updateExpertiseArea = (index: number, field: 'icon' | 'name', value: string) => {
         const newAreas = [...editedExpertiseAreas];
+        // @ts-ignore
         newAreas[index] = { ...newAreas[index], [field]: value };
         setEditedExpertiseAreas(newAreas);
     };

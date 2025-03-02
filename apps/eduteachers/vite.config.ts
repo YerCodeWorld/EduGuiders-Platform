@@ -17,7 +17,7 @@ export default defineConfig({
         }
     },
     server: {
-        port: 3001,
+        port: 3001, // Different port from eduguiders
         open: true
     },
     build: {

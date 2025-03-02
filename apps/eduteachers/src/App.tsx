@@ -1,24 +1,16 @@
-// src/App.tsx
 import { lazy, Suspense } from 'react';
-
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider, UserRole } from '../../eduguiders/src/contexts/AuthContext';
-import MainLayout from '../../eduguiders/src/components/layout/MainLayout';
-import ProtectedRoute from '../../eduguiders/src/components/common/ProtectedRoute';
+import { AuthProvider, MainLayout, ProtectedRoute, UserRole } from '../../eduguiders/src/exports';
+import { TeachersProvider } from "@/contexts";
 
-// Lazy-loaded pages for better performance
+// Lazy-loaded pages
 const TeacherSelector = lazy(() => import('./pages/TeacherSelector'));
 const TeacherProfile = lazy(() => import('./pages/TeacherProfile'));
-
-/*
-const TeacherDashboard = lazy(() => import('./pages/TeacherDashboard'));
-const StudentDashboard = lazy(() => import('./pages/StudentDashboard'));
-const BookingManagement = lazy(() => import('./pages/BookingManagement'));
-*/
 
 function App() {
     return (
         <AuthProvider>
+            <TeachersProvider>
             <Router>
                 <Suspense fallback={<div className="loading">Loading...</div>}>
                     <Routes>
@@ -27,28 +19,27 @@ function App() {
                             <Route index element={<TeacherSelector />} />
                             <Route path="teachers/:id" element={<TeacherProfile />} />
 
-                            {/* Protected Teacher routes */}
+                            {/* Protected routes */}
                             <Route path="teacher" element={
                                 <ProtectedRoute allowedRoles={[UserRole.TEACHER]}>
                                     <MainLayout />
                                 </ProtectedRoute>
                             }>
-                                {/*<Route index element={<TeacherDashboard />} />
-                                <Route path="bookings" element={<BookingManagement />} />*/}
+                                {/* Add teacher routes */}
                             </Route>
 
-                            {/* Protected Student routes */}
                             <Route path="student" element={
                                 <ProtectedRoute allowedRoles={[UserRole.STUDENT]}>
                                     <MainLayout />
                                 </ProtectedRoute>
                             }>
-                                {/*<Route index element={<StudentDashboard />} />*/}
+                                {/* Add student routes */}
                             </Route>
                         </Route>
                     </Routes>
                 </Suspense>
             </Router>
+            </TeachersProvider>
         </AuthProvider>
     );
 }

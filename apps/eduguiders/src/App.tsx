@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider, UserRole } from './contexts/AuthContext';
 import MainLayout from './components/layout/MainLayout';
 import ProtectedRoute from './components/common/ProtectedRoute';
-// './integration/eduteachers'   --- This is wthje original approach, was this intended?
+// './integration/eduteachers'   --- This is the original approach, was this intended?
 import { EduTeachersRoutes } from '../../eduteachers/src/integration/eduteachers';
 
 // Lazy-loaded pages for better performance
