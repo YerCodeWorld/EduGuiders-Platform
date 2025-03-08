@@ -2,7 +2,7 @@
 import React from 'react';
 import '../../styles/components/profile/profileNavigation.css';
 
-type SectionType = 'availability' | 'bio' | 'cv' | 'contact';
+type SectionType = 'availability' | 'bio' | 'cv' | 'contact' | 'teachingStyle' | 'personalRules' ;
 
 interface ProfileNavigationProps {
     activeSection: SectionType;
@@ -42,6 +42,21 @@ const ProfileNavigation: React.FC<ProfileNavigationProps> = ({
                 >
                     <i className="fas fa-file-alt"></i> CV
                 </button>
+
+                <button
+                    className={`nav-btn ${activeSection === 'teachingStyle' ? 'active' : ''}`}
+                    onClick={() => onSectionChange('teachingStyle')}
+                >
+                    <i className="fas fa-envelope"></i> Teaching Styles
+                </button>
+
+                <button
+                    className={`nav-btn ${activeSection === 'personalRules' ? 'active' : ''}`}
+                    onClick={() => onSectionChange('personalRules')}
+                >
+                    <i className="fas fa-envelope"></i> Personal Rules
+                </button>
+
 
                 <button
                     className={`nav-btn ${activeSection === 'contact' ? 'active' : ''}`}

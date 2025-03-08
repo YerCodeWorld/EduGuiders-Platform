@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { WeeklySchedule, TimeSlot, BookingRequest } from '@/types';
 import { useAuth, UserRole } from '@repo/ui/contexts/AuthContext';
-import { useTeachers } from '@/contexts';
-import { formatTime } from '@/utils/methods.ts';
+import { useTeachers } from '../../contexts';
+import { formatTime } from '../../../../../packages/ui/src/methods.ts';
 import '../../styles/components/profile/availability.css';
 
 interface AvailabilityProps {

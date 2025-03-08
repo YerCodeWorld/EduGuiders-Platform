@@ -31,10 +31,10 @@ const Header = () => {
                     <ul>
                         {/* Add link to EduTeachers */}
                         <li><Link to="/teachers">Teachers</Link></li>
-                        <li><Link to="/articles">Journal</Link></li>
-                        <li><Link to="/games">Games</Link></li>
-                        <li><Link to="/courses">Courses</Link></li>
-                        <li><Link to="/competitions">Competitions</Link></li>
+                        <li><Link to="/cons/blog">Journal</Link></li>
+                        <li><Link to="/cons/games">Games</Link></li>
+                        <li><Link to="/cons/courses">Courses</Link></li>
+                        <li><Link to="/cons/compete">Competitions</Link></li>
                     </ul>
                 </nav>
 
@@ -49,12 +49,6 @@ const Header = () => {
                                 />
                                 <span className="user-name">{user?.name}</span>
                             </div>
-                            <Link
-                                to={getUserDashboardLink(user?.role)}
-                                className="dashboard-link"
-                            >
-                                Dashboard
-                            </Link>
                             <button className="menu-toggle" onClick={toggleMenu}>
                                 <span className="menu-icon">☰</span>
                             </button>
@@ -82,9 +76,9 @@ function getUserDashboardLink(role?: UserRole): string {
         case UserRole.ADMIN:
             return '/admin';
         case UserRole.TEACHER:
-            return '/teacher/dashboard'; // Updated to use EduTeachers dashboard
+            return '/teacher/dashboard';
         case UserRole.STUDENT:
-            return '/student/dashboard'; // Updated to use EduTeachers dashboard
+            return '/student/dashboard';
         default:
             return '/';
     }

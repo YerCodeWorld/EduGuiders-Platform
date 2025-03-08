@@ -22,7 +22,7 @@ const Statistics = () => {
         {
             id: 'teachers',
             label: 'Expert Teachers',
-            value: 1250,
+            value: 0,
             prefix: '+',
             duration: 2000,
             icon: 'teacher-icon',
@@ -30,7 +30,7 @@ const Statistics = () => {
         {
             id: 'students',
             label: 'Active Students',
-            value: 25000,
+            value: 0,
             prefix: '+',
             duration: 2500,
             icon: 'student-icon',
@@ -38,21 +38,21 @@ const Statistics = () => {
         {
             id: 'courses',
             label: 'Courses',
-            value: 300,
+            value: 0,
             duration: 1800,
             icon: 'course-icon',
         },
         {
             id: 'countries',
             label: 'Countries',
-            value: 42,
+            value: 0,
             duration: 1500,
             icon: 'globe-icon',
         },
         {
             id: 'satisfaction',
             label: 'Satisfaction Rate',
-            value: 98,
+            value: 0,
             suffix: '%',
             duration: 2200,
             icon: 'star-icon',
@@ -60,7 +60,7 @@ const Statistics = () => {
         {
             id: 'classes',
             label: 'Classes Completed',
-            value: 180000,
+            value: 0,
             prefix: '+',
             duration: 2800,
             icon: 'class-icon',
@@ -76,6 +76,7 @@ const Statistics = () => {
     useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => {
+                // @ts-ignore
                 if (entries[0].isIntersecting && !animationStarted) {
                     setAnimationStarted(true);
                 }

@@ -37,7 +37,7 @@ const Tiles = () => {
             title: 'EduCourses',
             description: 'Follow specialized learning paths designed by experts',
             image: courses,
-            link: '/courses',
+            link: '/cons/courses',
             color: '#ec8d81',
         },
         {
@@ -45,7 +45,7 @@ const Tiles = () => {
             title: 'EduBLog',
             description: 'Read in-depth articles from educators and experts',
             image: articles,
-            link: '/articles',
+            link: '/cons/blog',
             color: '#6fc3df',
         },
         {
@@ -53,7 +53,7 @@ const Tiles = () => {
             title: 'EduGames',
             description: 'Make learning fun through educational games',
             image: games,
-            link: '/games',
+            link: '/cons/games',
             color: '#e7b788',
         },
         {
@@ -61,7 +61,7 @@ const Tiles = () => {
             title: 'EduMatch',
             description: 'Challenge yourself in academic competitions',
             image: competition,
-            link: '/competitions',
+            link: '/cons/compete',
             color: '#8ea9e8',
         },
         {
@@ -69,7 +69,7 @@ const Tiles = () => {
             title: 'EduChat',
             description: 'Join the community and share your ideas',
             image: discussion,
-            link: '/discussion',
+            link: '/cons/discuss',
             color: '#87c5a4',
         },
     ];

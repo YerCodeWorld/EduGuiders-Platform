@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Teacher } from '@/types';
-import { getInitials } from '../utils/methods';
 import '../styles/components/teacherCard.css';
 
 export interface TeacherCardProps {
@@ -67,7 +66,7 @@ export const TeacherCard: React.FC<TeacherCardProps> = ({ teacher, featured = fa
                         {teacher.profilePicture ? (
                             <img src={teacher.profilePicture} alt={teacher.name} />
                         ) : (
-                            <div className="profile-initials">{getInitials(teacher.name)}</div>
+                            <div className="profile-initials">{teacher.name}</div>
                         )}
                     </div>
 

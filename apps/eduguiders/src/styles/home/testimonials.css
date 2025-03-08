@@ -2,7 +2,7 @@
 
 .testimonials-section {
     padding: 5rem 0;
-    background-color: var(--light);
+    background-color: rgba(255, 255, 255, 0.6);
 }
 
 .testimonials-header {

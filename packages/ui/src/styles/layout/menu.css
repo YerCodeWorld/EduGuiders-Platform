@@ -34,6 +34,7 @@
     max-width: 350px;
     height: 100%;
     background-color: white;
+    opacity: 0.8;
     box-shadow: -5px 0 25px rgba(0, 0, 0, 0.15);
     transform: translateX(100%);
     transition: transform var(--transition-normal);
@@ -214,6 +215,39 @@
 
 .register-button:hover {
     background-color: var(--primary-dark);
+}
+
+/* Theme selector styles */
+.theme-selector {
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--light-gray);
+}
+
+.color-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    justify-content: center;
+}
+
+.color-option {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.color-option:hover {
+    transform: scale(1.1);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+.color-option:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(136, 89, 163, 0.3);
 }
 
 @media (max-width: 480px) {

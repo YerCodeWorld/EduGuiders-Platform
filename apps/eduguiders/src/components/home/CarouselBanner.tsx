@@ -1,8 +1,8 @@
 // src/components/home/CarouselBanner.tsx
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import bannerImage from '../../assets/images/bannerBackground.png';
-import mountain from '../../assets/images/mountain.png';
+import river from '../../assets/images/river.jpg';
+import nature from '../../assets/images/nature.jpg';
 import '../../styles/home/carouselBanner.css';
 
 interface Slide {
@@ -15,10 +15,13 @@ interface Slide {
     image: string;
 }
 
-const CarouselBanner = () => {
+interface CarouselBannerProps {
+    children?: ReactNode;
+}
+
+const CarouselBanner = ({ children }: CarouselBannerProps) => {
     const [currentSlide, setCurrentSlide] = useState(0);
     const [isTransitioning, setIsTransitioning] = useState(false);
-    // const [autoplayPaused, setAutoplayPaused] = useState(false);
 
     // Sample slides data - in a real app, this would come from a CMS or API
     const slides: Slide[] = [
@@ -29,7 +32,7 @@ const CarouselBanner = () => {
             backgroundImage: '/assets/images/banner1.jpg',
             buttonText: 'Get Started',
             buttonLink: '#explore',
-            image: bannerImage
+            image: river
         },
         {
             id: 2,
@@ -38,7 +41,7 @@ const CarouselBanner = () => {
             backgroundImage: '/assets/images/banner2.jpg',
             buttonText: 'Browse Teachers',
             buttonLink: '/teachers',
-            image: mountain
+            image: nature
         },
         {
             id: 3,
@@ -46,17 +49,30 @@ const CarouselBanner = () => {
             subtitle: 'Flexible scheduling and personalized learning paths for every student',
             backgroundImage: '/assets/images/banner3.jpg',
             buttonText: 'Explore Courses',
-            buttonLink: '/courses',
-            image: bannerImage
+            buttonLink: '/cons/courses',
+            image: nature
+        },
+        {
+            id: 3,
+            title: 'Do not take our words',
+            subtitle: 'See what our users have to say instead',
+            backgroundImage: '/assets/images/banner3.jpg',
+            buttonText: 'See Testimonies',
+            buttonLink: '#testimonies',
+            image: river
         },
     ];
+
+    const sections: string[] = [
+        "#explore",
+        "#testimonies"
+    ]
 
     // Navigation functions
     const goToNextSlide = useCallback(() => {
         if (isTransitioning) return;
 
         setIsTransitioning(true);
-        // Jum, i've seen this before (looking at you, circular navigation)
         setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
 
         // Reset transition state after animation completes
@@ -89,20 +105,22 @@ const CarouselBanner = () => {
         }, 600);
     };
 
+    const handleScroll = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, element: string) => {
+        event.preventDefault();
+        const section = document.getElementById(element.slice(1));
+        if (section) {
+            section.scrollIntoView({ behavior: "smooth" });
+        }
+    }
+
     // Autoplay functionality
     useEffect(() => {
-        // if (autoplayPaused) return;
-
         const interval = setInterval(() => {
             goToNextSlide();
         }, 5000);
 
         return () => clearInterval(interval);
-    }, [goToNextSlide]);  // autoplaypaused (second argument)
-
-    // Pause autoplay when hovering over carousel : Just in case we want to apply this behavior in the future
-    // const handleMouseEnter = () => setAutoplayPaused(true);
-    // const handleMouseLeave = () => setAutoplayPaused(false);
+    }, [goToNextSlide]);
 
     // Keyboard navigation
     useEffect(() => {
@@ -121,11 +139,9 @@ const CarouselBanner = () => {
     return (
         <section
             className="carousel-banner"
-
-
             aria-roledescription="carousel"
             aria-label="Featured content"
-        >
+        >`
             <div className="slides-container">
                 {slides.map((slide, index) => (
                     <div
@@ -137,9 +153,16 @@ const CarouselBanner = () => {
                         <div className="slide-content">
                             <h1>{slide.title}</h1>
                             <p>{slide.subtitle}</p>
-                            <Link to={slide.buttonLink} className="cta-button">
-                                {slide.buttonText}
-                            </Link>
+                            { sections.includes(slide.buttonLink) ?
+                                <a href={slide.buttonLink} className="cta-button"
+                                   onClick= {(event) => handleScroll(event, slide.buttonLink) }>{slide.buttonText}
+                                </a>
+                                :
+                                <Link to={slide.buttonLink} className="cta-button">
+                                    {slide.buttonText}
+                                </Link>
+                            }
+
                         </div>
                     </div>
                 ))}
@@ -175,6 +198,15 @@ const CarouselBanner = () => {
                     <span aria-hidden="true">›</span>
                 </button>
             </div>
+
+            {/* Welcome message or other children */}
+            {children && (
+                <div className="carousel-footer">
+                    <div className="carousel-footer-content">
+                        {children}
+                    </div>
+                </div>
+            )}
         </section>
     );
 };

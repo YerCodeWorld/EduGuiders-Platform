@@ -1,8 +1,9 @@
-// src/pages/TeacherDashboard.tsx
+// src/pages/HomePage.tsx
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth, UserRole } from '../../../../packages/ui/src/contexts/AuthContext';
+import { useAuth } from '../../../../packages/ui/src/contexts/AuthContext';
 import CarouselBanner from '../components/home/CarouselBanner';
+import WelcomeMessage from '../components/home/WelcomeMessage';
 import Tiles from '../components/home/Tiles';
 import Testimonials from '../components/home/Testimonials';
 import Statistics from '../components/home/Statistics';
@@ -68,46 +69,19 @@ const FEATURED_TEACHERS: Teacher[] = [
 ];
 
 const HomePage = () => {
-    const { user, isAuthenticated } = useAuth();
+    const { isAuthenticated } = useAuth();
 
     useEffect(() => {
         // Set page title
-        document.title = 'Guiders Door | Find Your Perfect Teacher';
+        document.title = 'EduGuiders | Find Your Perfect Teacher';
     }, []);
 
     return (
         <div className="home-page">
-            {/* Main banner carousel */}
-            <CarouselBanner />
-
-            {/* Personalized welcome for logged-in users */}
-            {isAuthenticated && user && (
-                <section className="welcome-section">
-                    <div className="welcome-container">
-                        <h2>Welcome back, {user.name}!</h2>
-                        <div className="quick-actions">
-                            <Link
-                                to={`/${user.role.toLowerCase()}`}
-                                className="dashboard-link"
-                            >
-                                Go to Dashboard
-                            </Link>
-
-                            {user.role === UserRole.STUDENT && (
-                                <Link to="/upcoming-classes" className="classes-link">
-                                    View Upcoming Classes
-                                </Link>
-                            )}
-
-                            {user.role === UserRole.TEACHER && (
-                                <Link to="/teacher/schedule" className="schedule-link">
-                                    Manage Your Schedule
-                                </Link>
-                            )}
-                        </div>
-                    </div>
-                </section>
-            )}
+            {/* Main banner carousel with welcome message as children */}
+            <CarouselBanner>
+                <WelcomeMessage />
+            </CarouselBanner>
 
             {/* Main content tiles */}
             <Tiles />

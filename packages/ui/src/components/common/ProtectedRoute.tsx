@@ -14,7 +14,7 @@ const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
 
     // Show loading state
     if (loading) {
-        return <div className="loading">Loading...</div>;
+        return <div className="loading">Getting there. Hold on...</div>;
     }
 
     // If user is not authenticated, redirect to login

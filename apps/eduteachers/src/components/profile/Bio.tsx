@@ -1,7 +1,7 @@
 // src/components/profile/Bio.tsx
 import React, { useState } from 'react';
 import { Bio as BioProp, ExpertiseArea } from '../../types';
-import { useTeachers } from '@/contexts';
+import { useTeachers } from '../../contexts';
 import '../../styles/components/profile/bio.css';
 
 interface BioComponentProps {

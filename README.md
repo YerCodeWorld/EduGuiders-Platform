@@ -1,2 +1,6 @@
 # EduGuiders-Platform
-This is the turborepo of the platform, integrating all apps (EduGuiders and EduTeachers so far) and setting up all configurations.
+
+EduGuiders Platform is a turborepo chosen to be the base for a platform with an Octopus-Like structure.
+I head and its tails. Having our 'packages' folder as our head and the 'apps' one as our tails.
+
+

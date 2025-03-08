@@ -1,0 +1,97 @@
+/* src/styles/common/underConstruction.css */
+
+.under-construction-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2rem;
+    text-align: center;
+    margin-top: 50px;
+}
+
+.under-construction-content {
+    max-width: 600px;
+    padding: 3rem 2rem;
+    background-color: white;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.construction-icon {
+    font-size: 3.5rem;
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+    animation: pulse 2s infinite ease-in-out;
+}
+
+.construction-title {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: var(--dark);
+}
+
+.construction-link {
+    margin-bottom: 3rem;
+}
+
+
+.construction-message {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    color: var(--gray);
+    max-width: 450px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.estimated-completion {
+    display: inline-block;
+    background-color: var(--light);
+    padding: 0.6rem 1.2rem;
+    margin-top: 2rem;
+    border-radius: var(--border-radius-md);
+    font-size: 0.9rem;
+    color: var(--dark);
+}
+
+.estimated-completion span {
+    font-weight: 600;
+    color: var(--primary);
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@media (max-width: 768px) {
+    .under-construction-container {
+        min-height: 300px;
+    }
+
+    .construction-icon {
+        font-size: 2.5rem;
+    }
+
+    .construction-title {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .under-construction-content {
+        padding: 2rem 1rem;
+    }
+
+    .construction-message {
+        font-size: 1rem;
+    }
+}

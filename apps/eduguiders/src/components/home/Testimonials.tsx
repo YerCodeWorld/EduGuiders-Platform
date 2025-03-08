@@ -108,7 +108,7 @@ const Testimonials = () => {
     }, [goToNext]);
 
     return (
-        <section className="testimonials-section">
+        <section id="testimonies" className="testimonials-section">
             <div className="testimonials-header">
                 <h2>What Our Community Says</h2>
                 <p>Hear from students, teachers, and parents who have found success on our platform</p>

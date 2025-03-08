@@ -9,6 +9,17 @@ interface MenuProps {
     onClose: () => void;
 }
 
+const themeColors = [
+    {   // Current theme
+        name: 'Teal', primary: '#5C9EAD', primaryDark: '#487F8A'
+    },
+    { name: 'Pink', primary: '#D46BA3', primaryDark: '#B3588C' },
+    { name: 'Blue', primary: '#779ECB', primaryDark: '#637EB0' },
+    { name: 'Coral', primary: '#E08D79', primaryDark: '#C17063' },
+    { name: 'Lavender', primary: '#A47BB9', primaryDark: '#8A66A0' }
+];
+
+
 const Menu = ({ isOpen, onClose }: MenuProps) => {
     const { user, isAuthenticated, logout } = useAuth();
 
@@ -40,6 +51,26 @@ const Menu = ({ isOpen, onClose }: MenuProps) => {
         logout();
         onClose();
     };
+
+    // Function to change theme color
+    const changeThemeColor = (primary: string, primaryDark: string ) => {
+        // Update CSS variable in the document root
+        document.documentElement.style.setProperty('--primary', primary);
+        document.documentElement.style.setProperty('--primary-dark', primaryDark);
+
+        // Save user preference to localStorage
+        localStorage.setItem('primary', primary);
+        localStorage.setItems('primary-dark', primaryDark);
+    };
+
+    // Initialize theme from localStorage when component mounts
+    useEffect(() => {
+        const savedPrimary = localStorage.getItem('primary');
+        const savedDark = localStorage.getItem('primary-dark');
+        if (savedDark && savedPrimary) {
+            changeThemeColor(savedPrimary, savedDark);
+        }
+    }, []);
 
     // Render role-specific menu items
     const renderRoleBasedItems = () => {
@@ -114,15 +145,31 @@ const Menu = ({ isOpen, onClose }: MenuProps) => {
                             <ul>
                                 <li><Link to="/" onClick={onClose}>Home</Link></li>
                                 <li><Link to="/teachers" onClick={onClose}>Teachers</Link></li>
-                                <li><Link to="/articles" onClick={onClose}>Journal</Link></li>
-                                <li><Link to="/games" onClick={onClose}>Games</Link></li>
-                                <li><Link to="/courses" onClick={onClose}>Courses</Link></li>
-                                <li><Link to="/competitions" onClick={onClose}>Competitions</Link></li>
+                                <li><Link to="/cons/blog" onClick={onClose}>Journal</Link></li>
+                                <li><Link to="/cons/games" onClick={onClose}>Games</Link></li>
+                                <li><Link to="/cons/courses" onClick={onClose}>Courses</Link></li>
+                                <li><Link to="/cons/competition" onClick={onClose}>Competitions</Link></li>
                             </ul>
                         </div>
 
                         {/* Role-specific navigation */}
                         {renderRoleBasedItems()}
+
+                        {/* Add theme selector above the logout/login buttons */}
+                        <div className="theme-selector">
+                            <div className="color-options">
+                                {themeColors.map((color) => (
+                                    <button
+                                        key={color.name}
+                                        className="color-option"
+                                        style={{ backgroundColor: color.primary }}
+                                        title={color.name}
+                                        onClick={() => changeThemeColor(color.primary, color.primaryDark)}
+                                        aria-label={`Set theme to ${color.name}`}
+                                    />
+                                ))}
+                            </div>
+                        </div>
 
                         {/* Authentication actions */}
                         <div className="auth-actions">
@@ -141,6 +188,7 @@ const Menu = ({ isOpen, onClose }: MenuProps) => {
                                 </div>
                             )}
                         </div>
+
                     </div>
                 </div>
             </div>

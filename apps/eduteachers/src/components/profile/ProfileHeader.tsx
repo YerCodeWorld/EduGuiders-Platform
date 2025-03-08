@@ -1,6 +1,6 @@
 // src/components/profile/ProfileHeader.tsx
 import React, { useState } from 'react';
-import { useTeachers } from '@/contexts';
+import { useTeachers } from '../../contexts';
 import '../../styles/components/profile/profileHeader.css';
 
 interface ProfileHeaderProps {
@@ -22,6 +22,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                                                          onBack,
                                                          canEdit
                                                      }) => {
+
     const [isEditing, setIsEditing] = useState(false);
     const [editedName, setEditedName] = useState(name);
     const [editedTitle, setEditedTitle] = useState(title);

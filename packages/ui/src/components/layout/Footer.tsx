@@ -1,4 +1,6 @@
 // src/components/layout/Footer.tsx
+
+//
 import { Link } from 'react-router-dom';
 import '../../styles/layout/footer.css';
 

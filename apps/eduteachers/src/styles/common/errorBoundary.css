@@ -1,0 +1,68 @@
+/* src/styles/common/errorBoundary.css */
+
+.error-boundary {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 400px;
+    padding: 2rem;
+    margin: 2rem auto;
+    max-width: 600px;
+    background-color: white;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.error-boundary h2 {
+    font-size: 1.8rem;
+    color: var(--danger);
+    margin-bottom: 1rem;
+}
+
+.error-boundary p {
+    color: var(--gray);
+    margin-bottom: 1.5rem;
+    max-width: 450px;
+}
+
+.error-message {
+    padding: 1rem;
+    background-color: rgba(244, 67, 54, 0.1);
+    border-radius: var(--border-radius-md);
+    color: var(--danger);
+    font-family: monospace;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    width: 100%;
+    text-align: left;
+    white-space: pre-wrap;
+    overflow-x: auto;
+}
+
+.reset-button {
+    padding: 0.75rem 1.5rem;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-md);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+
+.reset-button:hover {
+    background-color: var(--primary-dark);
+}
+
+@media (max-width: 768px) {
+    .error-boundary {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+
+    .error-boundary h2 {
+        font-size: 1.5rem;
+    }
+}
