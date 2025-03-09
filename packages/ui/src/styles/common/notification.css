@@ -1,0 +1,116 @@
+/* src/styles/common/notification.css */
+
+.notifications-container {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: var(--z-index-tooltip);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-width: 400px;
+    width: calc(100% - 2rem);
+}
+
+.notification {
+    display: flex;
+    align-items: flex-start;
+    padding: 1rem;
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-md);
+    background-color: white;
+    animation: slide-in 0.3s ease-out forwards;
+    width: 100%;
+}
+
+.notification-info {
+    border-left: 4px solid var(--secondary);
+}
+
+.notification-success {
+    border-left: 4px solid var(--success);
+}
+
+.notification-warning {
+    border-left: 4px solid var(--warning);
+}
+
+.notification-error {
+    border-left: 4px solid var(--danger);
+}
+
+.notification-icon {
+    margin-right: 0.75rem;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.notification-info .notification-icon {
+    color: var(--secondary);
+}
+
+.notification-success .notification-icon {
+    color: var(--success);
+}
+
+.notification-warning .notification-icon {
+    color: var(--warning);
+}
+
+.notification-error .notification-icon {
+    color: var(--danger);
+}
+
+.notification-content {
+    flex: 1;
+}
+
+.notification-title {
+    margin: 0 0 0.25rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--dark);
+}
+
+.notification-message {
+    margin: 0;
+    color: var(--gray);
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    color: var(--gray);
+    font-size: 0.875rem;
+    cursor: pointer;
+    padding: 0.25rem;
+    margin-left: 0.5rem;
+    flex-shrink: 0;
+    transition: color var(--transition-fast);
+}
+
+.notification-close:hover {
+    color: var(--dark);
+}
+
+@keyframes slide-in {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .notifications-container {
+        max-width: 100%;
+        width: calc(100% - 2rem);
+        top: 0.5rem;
+        right: 0.5rem;
+    }
+}

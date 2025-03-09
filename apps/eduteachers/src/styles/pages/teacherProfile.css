@@ -1,0 +1,85 @@
+/* src/styles/pages/teacherProfile.css */
+
+.teacher-profile-wrapper {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--light);
+}
+
+.profile-content-container {
+    padding: 2rem;
+    background-color: white;
+    flex-grow: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.teacher-not-found {
+    text-align: center;
+    padding: 4rem 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.teacher-not-found h2 {
+    font-size: 2rem;
+    color: var(--dark);
+    margin-bottom: 1rem;
+}
+
+.teacher-not-found p {
+    font-size: 1.1rem;
+    color: var(--gray);
+    margin-bottom: 2rem;
+}
+
+.teacher-not-found .back-button {
+    padding: 0.8rem 1.5rem;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-md);
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+
+.teacher-not-found .back-button:hover {
+    background-color: var(--primary-dark);
+}
+
+/* Profile section */
+.profile-section {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.section-intro {
+    margin-bottom: 2rem;
+    color: var(--gray);
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .profile-content-container {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .profile-content-container {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .teacher-not-found h2 {
+        font-size: 1.6rem;
+    }
+}
