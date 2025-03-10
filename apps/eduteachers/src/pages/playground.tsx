@@ -1,75 +1,234 @@
-// src/components/profile/ProfileNavigation.tsx
-import React from 'react';
-import { ProfileSectionType } from '../../pages/TeacherProfile';
-import '../../styles/components/profile/profileNavigation.css';
+// src/components/profile/ProfileHeader.tsx
+import React, { useState, useEffect, useCallback } from 'react';
+import { useTeachers } from '../../contexts';
+import '../../styles/components/profile/profileHeader.css';
 
-interface ProfileNavigationProps {
-    activeSection: ProfileSectionType;
-    onSectionChange: (section: ProfileSectionType) => void;
+interface ProfileHeaderProps {
+    name: string;
+    title: string;
+    profilePicture: string;
+    landscapePicture: string;
+    teacherId: string;
+    onBack: () => void;
     canEdit: boolean;
     isEditing: boolean;
     onToggleEdit: () => void;
 }
 
-const ProfileNavigation: React.FC<ProfileNavigationProps> = ({
-                                                                 activeSection,
-                                                                 onSectionChange,
-                                                                 canEdit,
-                                                                 isEditing,
-                                                                 onToggleEdit
-                                                             }) => {
-    // Navigation items with icons and labels
-    const navigationItems: Array<{
-        id: ProfileSectionType;
-        icon: string;
-        label: string;
-    }> = [
-        { id: 'availability', icon: 'calendar-alt', label: 'Availability' },
-        { id: 'bio', icon: 'user', label: 'Bio' },
-        { id: 'cv', icon: 'file-alt', label: 'CV' },
-        { id: 'teachingStyle', icon: 'chalkboard-teacher', label: 'Teaching Style' },
-        { id: 'personalRules', icon: 'list-ul', label: 'Personal Rules' },
-        { id: 'contact', icon: 'envelope', label: 'Contact' }
-    ];
+const ProfileHeader: React.FC<ProfileHeaderProps> = ({
+                                                         name,
+                                                         title,
+                                                         profilePicture,
+                                                         landscapePicture,
+                                                         teacherId,
+                                                         onBack,
+                                                         canEdit,
+                                                         isEditing,
+                                                         onToggleEdit
+                                                     }) => {
+    const { updateTeacherSection } = useTeachers();
+
+    const [editedName, setEditedName] = useState<string>(name);
+    const [editedTitle, setEditedTitle] = useState<string>(title);
+    const [editedProfilePic, setEditedProfilePic] = useState<string>(profilePicture);
+    const [editedLandscapePic, setEditedLandscapePic] = useState<string>(landscapePicture);
+    const [validationErrors, setValidationErrors] = useState<string[]>([]);
+    const [isSaving, setIsSaving] = useState<boolean>(false);
+
+    // Initialize edit state when props change
+    useEffect(() => {
+        setEditedName(name);
+        setEditedTitle(title);
+        setEditedProfilePic(profilePicture);
+        setEditedLandscapePic(landscapePicture);
+
+        // Clear validation errors when exiting edit mode
+        if (!isEditing) {
+            setValidationErrors([]);
+        }
+    }, [name, title, profilePicture, landscapePicture, isEditing]);
+
+    // Validate header data
+    const validateHeader = useCallback((): boolean => {
+        const errors: string[] = [];
+
+        if (!editedName.trim()) {
+            errors.push('Name is required');
+        }
+
+        if (!editedTitle.trim()) {
+            errors.push('Professional title is required');
+        }
+
+        setValidationErrors(errors);
+        return errors.length === 0;
+    }, [editedName, editedTitle]);
+
+    // Save profile header changes
+    const handleSaveClick = async () => {
+        if (!validateHeader()) {
+            return;
+        }
+
+        setIsSaving(true);
+        try {
+            // Update just the header information
+            const headerUpdate = {
+                name: editedName,
+                title: editedTitle,
+                profilePicture: editedProfilePic,
+                landscapePicture: editedLandscapePic
+            };
+
+            // Use the updateTeacherSection method
+            const success = await updateTeacherSection(teacherId, 'headerInfo', headerUpdate);
+
+            if (success) {
+                onToggleEdit(); // Exit edit mode
+            }
+        } catch (error) {
+            console.error('Error saving header:', error);
+            setValidationErrors(['Failed to save changes. Please try again.']);
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    // Reset changes and exit edit mode
+    const handleCancelClick = () => {
+        setEditedName(name);
+        setEditedTitle(title);
+        setEditedProfilePic(profilePicture);
+        setEditedLandscapePic(landscapePicture);
+        setValidationErrors([]);
+        onToggleEdit();
+    };
+
+    // Simulate file upload by using placeholder images
+    const handleImageUpload = (type: 'profile' | 'landscape') => {
+        // In a real app, this would upload to a server and get a URL back
+        // For now, we'll use placeholder images with a timestamp to force a refresh
+        const dimensions = type === 'profile' ? '160/160' : '1600/400';
+        const newImageUrl = `/api/placeholder/${dimensions}?t=${Date.now()}`;
+
+        if (type === 'profile') {
+            setEditedProfilePic(newImageUrl);
+        } else {
+            setEditedLandscapePic(newImageUrl);
+        }
+    };
 
     return (
-        <nav className="profile-navigation" aria-label="Profile navigation">
-            <div className="nav-buttons">
-                {navigationItems.map(item => (
+        <header className="profile-header">
+            <div
+                className="landscape-picture"
+                style={{ backgroundImage: `url(${isEditing ? editedLandscapePic : landscapePicture})` }}
+            >
+                {isEditing && (
                     <button
-                        key={item.id}
-                        className={`nav-btn ${activeSection === item.id ? 'active' : ''}`}
-                        onClick={() => onSectionChange(item.id)}
-                        aria-current={activeSection === item.id ? 'page' : undefined}
-                        aria-label={item.label}
+                        className="edit-landscape-btn"
+                        onClick={() => handleImageUpload('landscape')}
+                        aria-label="Change banner image"
                     >
-                        <i className={`fas fa-${item.icon}`} aria-hidden="true"></i> {item.label}
+                        <i className="fas fa-camera"></i> Change Banner
                     </button>
-                ))}
+                )}
+                <div className="overlay"></div>
+
+                <button
+                    className="back-button"
+                    onClick={onBack}
+                    aria-label="Go back"
+                >
+                    <i className="fas fa-arrow-left"></i> Back
+                </button>
             </div>
 
-            {canEdit && (
-                <div className="edit-controls">
-                    <button
-                        className={`edit-toggle-btn ${isEditing ? 'editing' : ''}`}
-                        onClick={onToggleEdit}
-                        aria-pressed={isEditing}
-                        aria-label={isEditing ? 'Cancel editing' : `Edit ${activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}`}
-                    >
-                        {isEditing ? (
-                            <>
-                                <i className="fas fa-times" aria-hidden="true"></i> Cancel Editing
-                            </>
-                        ) : (
-                            <>
-                                <i className="fas fa-edit" aria-hidden="true"></i> Edit {activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}
-                            </>
-                        )}
-                    </button>
+            <div className="profile-personal">
+                <div
+                    className="profile-picture"
+                    style={{ backgroundImage: `url(${isEditing ? editedProfilePic : profilePicture})` }}
+                >
+                    {isEditing && (
+                        <button
+                            className="edit-profile-pic-btn"
+                            onClick={() => handleImageUpload('profile')}
+                            aria-label="Change profile picture"
+                        >
+                            <i className="fas fa-camera"></i>
+                        </button>
+                    )}
                 </div>
-            )}
-        </nav>
+
+                <div className="profile-name-container">
+                    {validationErrors.length > 0 && isEditing && (
+                        <div className="header-validation-errors">
+                            <ul>
+                                {validationErrors.map((error, index) => (
+                                    <li key={index} className="error-message">{error}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+
+                    {isEditing ? (
+                        <div className="edit-name-container">
+                            <input
+                                type="text"
+                                value={editedName}
+                                onChange={(e) => setEditedName(e.target.value)}
+                                className="edit-name-input"
+                                placeholder="Teacher Name"
+                                aria-label="Teacher name"
+                                required
+                            />
+                            <input
+                                type="text"
+                                value={editedTitle}
+                                onChange={(e) => setEditedTitle(e.target.value)}
+                                className="edit-title-input"
+                                placeholder="Professional Title"
+                                aria-label="Professional title"
+                                required
+                            />
+                            <div className="edit-actions">
+                                <button
+                                    className="cancel-edit-btn"
+                                    onClick={handleCancelClick}
+                                    disabled={isSaving}
+                                    aria-label="Cancel editing"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    className="save-edit-btn"
+                                    onClick={handleSaveClick}
+                                    disabled={isSaving}
+                                    aria-label="Save changes"
+                                >
+                                    {isSaving ? 'Saving...' : 'Save Changes'}
+                                </button>
+                            </div>
+                        </div>
+                    ) : (
+                        <>
+                            <h1 className="profile-name">{name}</h1>
+                            <p className="profile-title">{title}</p>
+                            {canEdit && (
+                                <button
+                                    className="edit-profile-btn"
+                                    onClick={onToggleEdit}
+                                    aria-label="Edit profile"
+                                >
+                                    <i className="fas fa-edit"></i> Edit Profile
+                                </button>
+                            )}
+                        </>
+                    )}
+                </div>
+            </div>
+        </header>
     );
 };
 
-export default ProfileNavigation;
+export default ProfileHeader;

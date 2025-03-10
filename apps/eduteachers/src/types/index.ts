@@ -108,6 +108,12 @@ export interface Teacher {
     posts: Post[];
     rating?: number;
     reviewCount?: number;
+    headerInfo?: {
+        name: string;
+        title: string;
+        profilePicture: string;
+        landscapePicture: string;
+    };
     // teaching style
     // personal rules
     // headerinfo ???

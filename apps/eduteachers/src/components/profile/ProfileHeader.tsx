@@ -1,5 +1,5 @@
 // src/components/profile/ProfileHeader.tsx
-import React, { useState } from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import { useTeachers } from '../../contexts';
 import '../../styles/components/profile/profileHeader.css';
 
@@ -22,46 +22,92 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                                                          landscapePicture,
                                                          teacherId,
                                                          onBack,
-                                                         canEdit
+                                                         canEdit,
+                                                         isEditing,
+                                                         onToggleEdit,
                                                      }) => {
 
-    const [isEditing, setIsEditing] = useState(false);
-    const [editedName, setEditedName] = useState(name);
-    const [editedTitle, setEditedTitle] = useState(title);
-    const [editedProfilePic, setEditedProfilePic] = useState(profilePicture);
-    const [editedLandscapePic, setEditedLandscapePic] = useState(landscapePicture);
+    const { updateTeacherSection } = useTeachers();
 
-    const { getTeacher, updateTeacher } = useTeachers();
+    const [editedName, setEditedName] = useState<string>(name);
+    const [editedTitle, setEditedTitle] = useState<string>(title);
+    const [editedProfilePic, setEditedProfilePic] = useState<string>(profilePicture);
+    const [editedLandscapePic, setEditedLandscapePic] = useState<string>(landscapePicture);
+    const [validationErrors, setValidationErrors] = useState<string[]>([]);
+    const [isSaving, setIsSaving] = useState(false);
 
-    // Handle editing the header
-    const handleEditClick = () => {
-        setIsEditing(true);
-    };
+    // const { getTeacher, updateTeacher } = useTeachers();
+
+    useEffect(() => {
+        setEditedName(name);
+        setEditedTitle(title);
+        setEditedName(profilePicture);
+        setEditedLandscapePic(landscapePicture);
+
+        if (!isEditing) {
+            setValidationErrors([]);
+        }
+    }, [name, title, profilePicture, landscapePicture, isEditing]);
+
+    // Same thing as always for the last 10 years, validate stuff
+    const validateHeader = useCallback((): boolean => {
+        const errors: string[] = [];
+
+        if (!editedName.trim()) {
+            errors.push('Name is required');
+        }
+
+        if (!editedTitle.trim()) {
+            errors.push('Professional title is required');
+        }
+
+        setValidationErrors(errors);
+        return errors.length === 0;
+    }, [editedName, editedTitle]);
 
     // Handle saving changes
-    const handleSaveClick = () => {
-        // Get the current teacher data
-        const teacher = getTeacher(teacherId);
+    const handleSaveClick = async () => {
+        if (!validateHeader()) {
+            return;
+        }
 
-        if (!teacher) return;
+        setIsSaving(true);
+        try {
+            // Update just the header information
+            const headerUpdate = {
+                name: editedName,
+                title: editedTitle,
+                profilePicture: editedProfilePic,
+                landscapePicture: editedLandscapePic
+            };
 
-        // Update with edited values
-        const updatedTeacher = {
-            ...teacher,
-            name: editedName,
-            title: editedTitle,
-            profilePicture: editedProfilePic,
-            landscapePicture: editedLandscapePic
-        };
+            // Use the updateTeacherSection method
+            const success = await updateTeacherSection(teacherId, 'headerInfo', headerUpdate);
 
-        updateTeacher(updatedTeacher);
-        setIsEditing(false);
+            if (success) {
+                onToggleEdit(); // Exit edit mode
+            }
+        } catch (error) {
+            console.error('Error saving header:', error);
+            setValidationErrors(['Failed to save changes. Please try again.']);
+        } finally {
+            setIsSaving(false);
+        }
     };
 
-    // Simulate file upload by using a placeholder
+    const handleCancelClick = () => {
+        setEditedName(name);
+        setEditedTitle(title);
+        setEditedProfilePic(profilePicture);
+        setEditedLandscapePic(landscapePicture);
+        setValidationErrors([]);
+        onToggleEdit();
+    };
+
     const handleImageUpload = (type: 'profile' | 'landscape') => {
-        // In a real app, this would upload to a server and get a URL back
-        const newImageUrl = `/api/placeholder/${type === 'profile' ? '160/160' : '1600/400'}?random=${Date.now()}`;
+        // For now, we'll use placeholder images with a timestamp to force a refresh
+        const dimensions = type === 'profile' ? '160/160' : '1600/400';
+        const newImageUrl = `/api/placeholder/${dimensions}?t=${Date.now()}`;
 
         if (type === 'profile') {
             setEditedProfilePic(newImageUrl);
@@ -80,13 +126,18 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                     <button
                         className="edit-landscape-btn"
                         onClick={() => handleImageUpload('landscape')}
+                        aria-label="Change banner image"
                     >
                         <i className="fas fa-camera"></i> Change Banner
                     </button>
                 )}
                 <div className="overlay"></div>
 
-                <button className="back-button" onClick={onBack}>
+                <button
+                    className="back-button"
+                    onClick={onBack}
+                    aria-label="Go back"
+                >
                     <i className="fas fa-arrow-left"></i> Back
                 </button>
             </div>
@@ -100,6 +151,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                         <button
                             className="edit-profile-pic-btn"
                             onClick={() => handleImageUpload('profile')}
+                            aria-label="Change profile picture"
                         >
                             <i className="fas fa-camera"></i>
                         </button>
@@ -107,6 +159,16 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                 </div>
 
                 <div className="profile-name-container">
+                    {validationErrors.length > 0 && isEditing && (
+                        <div className="header-validation-errors">
+                            <ul>
+                                {validationErrors.map((error, index) => (
+                                    <li key={index} className="error-message">{error}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+
                     {isEditing ? (
                         <div className="edit-name-container">
                             <input
@@ -115,6 +177,8 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                                 onChange={(e) => setEditedName(e.target.value)}
                                 className="edit-name-input"
                                 placeholder="Teacher Name"
+                                aria-label="Teacher name"
+                                required
                             />
                             <input
                                 type="text"
@@ -122,19 +186,25 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                                 onChange={(e) => setEditedTitle(e.target.value)}
                                 className="edit-title-input"
                                 placeholder="Professional Title"
+                                aria-label="Professional title"
+                                required
                             />
                             <div className="edit-actions">
                                 <button
                                     className="cancel-edit-btn"
-                                    onClick={() => setIsEditing(false)}
+                                    onClick={handleCancelClick}
+                                    disabled={isSaving}
+                                    aria-label="Cancel editing"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     className="save-edit-btn"
                                     onClick={handleSaveClick}
+                                    disabled={isSaving}
+                                    aria-label="Save changes"
                                 >
-                                    Save Changes
+                                    {isSaving ? 'Saving...' : 'Save Changes'}
                                 </button>
                             </div>
                         </div>
@@ -145,7 +215,8 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                             {canEdit && (
                                 <button
                                     className="edit-profile-btn"
-                                    onClick={handleEditClick}
+                                    onClick={onToggleEdit}
+                                    aria-label="Edit profile"
                                 >
                                     <i className="fas fa-edit"></i> Edit Profile
                                 </button>

@@ -151,7 +151,13 @@ export const TeachersProvider = ({ children }: TeachersProviderProps) => {
         sectionName: K,
         sectionData: Teacher[K]
     ): Promise<boolean> => {
+
         try {
+            /**
+             * This commented out below was the previous state that was working fine
+             * I changed this in order to fix issues with editing header stuff.
+             * As doing this was discouraged, I'll keep the old version just in case.
+             *
             const teacher = getTeacher(teacherId);
 
             if (!teacher) {
@@ -172,6 +178,50 @@ export const TeachersProvider = ({ children }: TeachersProviderProps) => {
             console.error(`Update ${String(sectionName)} error:`, err);
             return false;
         }
+            */
+
+            const teacher = getTeacher(teacherId);
+
+            if (!teacher) {
+                // setError('Teacher not found');
+                return false;
+            }
+
+            let updatedTeacher: Teacher;
+
+            // Special case for headerInfo
+            if (sectionName === 'headerInfo') {
+                // Type assertion to access the properties
+                const headerData = sectionData as unknown as {
+                    name: string;
+                    title: string;
+                    profilePicture: string;
+                    landscapePicture: string;
+                };
+
+                updatedTeacher = {
+                    ...teacher,
+                    name: headerData.name,
+                    title: headerData.title,
+                    profilePicture: headerData.profilePicture,
+                    landscapePicture: headerData.landscapePicture
+                };
+            } else {
+                // Normal case for other sections
+                updatedTeacher = {
+                    ...teacher,
+                    [sectionName]: sectionData
+                };
+            }
+
+            return await updateTeacher(updatedTeacher);
+        } catch (err) {
+            // setError(`Failed to update ${String(sectionName)}. Please try again.`);
+            console.error(`Update ${String(sectionName)} error:`, err);
+            return false;
+        }
+
+
     };
 
     // Create new booking logic
