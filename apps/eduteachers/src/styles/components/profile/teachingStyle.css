@@ -1,0 +1,173 @@
+/* src/styles/components/profile/teachingStyle.css */
+
+.teaching-style-content {
+    padding: 1rem 0;
+}
+
+.teaching-philosophy,
+.teaching-approaches,
+.teaching-methodology {
+    margin-bottom: 2rem;
+}
+
+.teaching-philosophy h3,
+.teaching-approaches h3,
+.teaching-methodology h3 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+}
+
+.teaching-philosophy h3::before {
+    content: '\f0eb';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    margin-right: 0.75rem;
+    color: var(--primary);
+}
+
+.teaching-approaches h3::before {
+    content: '\f085';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    margin-right: 0.75rem;
+    color: var(--primary);
+}
+
+.teaching-methodology h3::before {
+    content: '\f0c0';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    margin-right: 0.75rem;
+    color: var(--primary);
+}
+
+.approaches-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.approach-item {
+    background-color: var(--light);
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 3px solid var(--primary);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.empty-content {
+    color: var(--gray);
+    font-style: italic;
+    margin: 1rem 0;
+}
+
+/* Edit mode styles */
+.teaching-style-edit-form {
+    max-width: 800px;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.form-group textarea,
+.form-group input[type="text"] {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+.form-group textarea:focus,
+.form-group input[type="text"]:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(136, 89, 163, 0.2);
+}
+
+.field-help {
+    font-size: 0.875rem;
+    color: var(--gray);
+    margin-top: 0.5rem;
+}
+
+.approach-input {
+    display: flex;
+    margin-bottom: 0.5rem;
+}
+
+.approach-input input {
+    flex: 1;
+}
+
+.remove-approach-btn {
+    background: none;
+    border: none;
+    color: var(--danger);
+    font-size: 1.1rem;
+    cursor: pointer;
+    margin-left: 0.5rem;
+    padding: 0 0.5rem;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.remove-approach-btn:hover {
+    opacity: 1;
+}
+
+.remove-approach-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.add-approach-btn {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: 1px dashed #ccc;
+    color: var(--primary);
+    padding: 0.5rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border-radius: 4px;
+    width: 100%;
+    justify-content: center;
+    margin-top: 0.5rem;
+    transition: background-color 0.2s;
+}
+
+.add-approach-btn:hover {
+    background-color: rgba(136, 89, 163, 0.05);
+}
+
+.add-approach-btn i {
+    margin-right: 0.5rem;
+}
+
+.validation-errors {
+    background-color: rgba(244, 67, 54, 0.1);
+    border-left: 3px solid #f44336;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 4px;
+}
+
+.validation-errors ul {
+    margin: 0;
+    padding-left: 1.5rem;

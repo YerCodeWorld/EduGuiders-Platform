@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { TeachingStyle as TeachingStyleProps } from '@/types';
 import { useTeachers } from "../../contexts";
-// import css file
+import '../../styles/components/profile/teachingStyle.css';
 
 interface TeachingStyleComponentProps {
     teachingStyle: TeachingStyleProps;
