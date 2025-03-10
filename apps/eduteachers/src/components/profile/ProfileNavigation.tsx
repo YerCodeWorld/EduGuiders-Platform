@@ -1,7 +1,7 @@
 // src/components/profile/ProfileNavigation.tsx
 import React from 'react';
-import '../../styles/components/profile/profileNavigation.css';
 import {ProfileSectionType} from "@/types";
+import '../../styles/components/profile/profileNavigation.css';
 
 interface ProfileNavigationProps {
     activeSection: ProfileSectionType;
@@ -18,51 +18,37 @@ const ProfileNavigation: React.FC<ProfileNavigationProps> = ({
                                                                  isEditing,
                                                                  onToggleEdit
                                                              }) => {
+
+    const navigationItems: Array<{
+        id: ProfileSectionType;
+        icon: string;
+        label: string;
+    }> = [
+        { id: "availability", icon: 'calendar-alt', label: 'Availability' },
+        { id: 'bio', icon: 'user', label: 'Bio' },
+        { id: 'cv', icon: 'file-alt', label: 'CV' },
+        { id: 'teachingStyle', icon: 'chalkboard-teacher', label: 'Teaching Style' },
+        { id: 'personalRules', icon: 'list-ul', label: 'Personal Rules' },
+        { id: 'contact', icon: 'envelope', label: 'Contact' }
+    ];
+
+    // Previous implementation was written manually for every single section
+    // This new one uses the map above to complete everything in a more manageable way
+
     return (
-        <nav className="profile-navigation">
+        <nav className="profile-navigation" aria-label="Profile navigation">
             <div className="nav-buttons">
-                <button
-                    className={`nav-btn ${activeSection === 'availability' ? 'active' : ''}`}
-                    onClick={() => onSectionChange('availability')}
-                >
-                    <i className="fas fa-calendar-alt"></i> Availability
-                </button>
-
-                <button
-                    className={`nav-btn ${activeSection === 'bio' ? 'active' : ''}`}
-                    onClick={() => onSectionChange('bio')}
-                >
-                    <i className="fas fa-user"></i> Bio
-                </button>
-
-                <button
-                    className={`nav-btn ${activeSection === 'cv' ? 'active' : ''}`}
-                    onClick={() => onSectionChange('cv')}
-                >
-                    <i className="fas fa-file-alt"></i> CV
-                </button>
-
-                <button
-                    className={`nav-btn ${activeSection === 'teachingStyle' ? 'active' : ''}`}
-                    onClick={() => onSectionChange('teachingStyle')}
-                >
-                    <i className="fas fa-envelope"></i> Teaching Styles
-                </button>
-
-                <button
-                    className={`nav-btn ${activeSection === 'personalRules' ? 'active' : ''}`}
-                    onClick={() => onSectionChange('personalRules')}
-                >
-                    <i className="fas fa-envelope"></i> Personal Rules
-                </button>
-
-
-                <button
-                    className={`nav-btn ${activeSection === 'contact' ? 'active' : ''}`}
-                    onClick={() => onSectionChange('contact')}
-                >
-                    <i className="fas fa-envelope"></i> Contact
-                </button>
+                {navigationItems.map(item => (
+                    <button
+                        key={item.id}
+                        className={`nav-btn ${activeSection === item.id ? 'active' : ''}`}
+                        onClick={() => onSectionChange(item.id)}
+                        aria-current={activeSection === item.id ? 'page' : undefined}
+                        aria-label={item.label}
+                    >
+                        <i className={`fas fa-${item.icon}`} aria-hidden="true"></i> {item.label}
+                    </button>
+                ))}
             </div>
 
             {canEdit && (
@@ -70,14 +56,16 @@ const ProfileNavigation: React.FC<ProfileNavigationProps> = ({
                     <button
                         className={`edit-toggle-btn ${isEditing ? 'editing' : ''}`}
                         onClick={onToggleEdit}
+                        aria-pressed={isEditing}
+                        aria-label={isEditing ? 'Cancel editing' : `Edit ${activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}`}
                     >
                         {isEditing ? (
                             <>
-                                <i className="fas fa-times"></i> Cancel Editing
+                                <i className="fas fa-times" aria-hidden="true"></i> Cancel Editing
                             </>
                         ) : (
                             <>
-                                <i className="fas fa-edit"></i> Edit {activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}
+                                <i className="fas fa-edit" aria-hidden="true"></i> Edit {activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}
                             </>
                         )}
                     </button>
