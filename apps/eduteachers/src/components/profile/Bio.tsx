@@ -151,15 +151,6 @@ const Bio: React.FC<BioComponentProps> = ({
             <section id="bio" className="profile-section">
                 <div className="section-header">
                     <h2>Biography</h2>
-                    {isEditable && (
-                        <button
-                            className="edit-bio-btn"
-                            onClick={onEditToggle}
-                            aria-label="Edit biography"
-                        >
-                            <i className="fas fa-edit"></i> Edit Biography
-                        </button>
-                    )}
                 </div>
 
                 <div className="bio-content">

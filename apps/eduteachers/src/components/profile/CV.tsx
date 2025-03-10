@@ -223,15 +223,6 @@ const CV: React.FC<CVComponentProps> = ({
             <section id="cv" className="profile-section">
                 <div className="section-header">
                     <h2>Curriculum Vitae</h2>
-                    {isEditable && (
-                        <button
-                            className="edit-cv-btn"
-                            onClick={onEditToggle}
-                            aria-label="Edit CV"
-                        >
-                            <i className="fas fa-edit"></i> Edit CV
-                        </button>
-                    )}
                 </div>
 
                 <div className="cv-section">

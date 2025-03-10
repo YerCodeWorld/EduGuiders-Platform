@@ -1,34 +1,33 @@
-// src/components/profile/TeachingStyle.tsx
 import React, { useState, useEffect, useCallback } from 'react';
 import { TeachingStyle as TeachingStyleProps } from '@/types';
-import { useTeachers } from '../contexts';
-import '../../styles/components/profile/teachingStyle.css';
+import { useTeachers } from "../../contexts";
+// import css file
 
 interface TeachingStyleComponentProps {
     teachingStyle: TeachingStyleProps;
-    isEditable: boolean;
+    isEditable: boolean | undefined;
     isEditing: boolean;
     teacherId: string;
     onEditToggle: () => void;
 }
 
 const TeachingStyle: React.FC<TeachingStyleComponentProps> = ({
-                                                                  teachingStyle,
-                                                                  isEditable,
-                                                                  isEditing,
-                                                                  teacherId,
-                                                  onEditToggle,
- }) => {
-    const { updateTeachingStyle } = useTeachers();
+                                                                teachingStyle,
+                                                                isEditable,
+                                                                isEditing,
+                                                                teacherId,
+                                                                onEditToggle
+                                                              }) => {
 
-    // Component state
+
+    const { updateTeacherSection } = useTeachers();
+
     const [editedPhilosophy, setEditedPhilosophy] = useState<string>('');
     const [editedMethodology, setEditedMethodology] = useState<string>('');
     const [editedApproaches, setEditedApproaches] = useState<string[]>([]);
-    const [validationErrors, setValidationErrors] = useState<string[]>([]);
-    const [isSaving, setIsSaving] = useState<boolean>(false);
+    const [validationErrors, setValidationErros] = useState<string[]>([]);
+    const [isSaving, setIsSaving] = useState(false);
 
-    // Initialize state from props
     useEffect(() => {
         if (teachingStyle) {
             setEditedPhilosophy(teachingStyle.philosophy || '');
@@ -36,37 +35,35 @@ const TeachingStyle: React.FC<TeachingStyleComponentProps> = ({
             setEditedApproaches(teachingStyle.approaches || []);
         }
 
-        // Clear validation errors when toggling edit mode
         if (!isEditing) {
-            setValidationErrors([]);
+            setValidationErros([]);
         }
     }, [teachingStyle, isEditing]);
 
-    // Validate data before saving
     const validateTeachingStyle = useCallback((): boolean => {
         const errors: string[] = [];
 
         if (!editedPhilosophy.trim()) {
-            errors.push('Teaching philosophy is required');
+            errors.push("Teaching philosophy is required");
         }
 
         if (!editedApproaches.length) {
-            errors.push('At least one teaching approach is required');
+            errors.push('At least one teaching approach is required')
         } else if (editedApproaches.some(approach => !approach.trim())) {
-            errors.push('Teaching approaches cannot be empty');
+            errors.push("Teaching approaches cannot be empty.");
         }
 
-        setValidationErrors(errors);
+        setValidationErros(errors);
         return errors.length === 0;
     }, [editedPhilosophy, editedApproaches]);
 
-    // Handle saving changes
     const handleSave = async () => {
-        if (!validateTeachingStyle()) {
+        if (!validateTeachingStyle) {
             return;
         }
 
         setIsSaving(true);
+
         try {
             const updatedTeachingStyle: TeachingStyleProps = {
                 philosophy: editedPhilosophy,
@@ -74,44 +71,39 @@ const TeachingStyle: React.FC<TeachingStyleComponentProps> = ({
                 approaches: editedApproaches.filter(approach => approach.trim() !== '')
             };
 
-            const success = await updateTeachingStyle(teacherId, updatedTeachingStyle);
+            const success = await updateTeacherSection(teacherId, 'teachingStyle', updatedTeachingStyle)
 
             if (success) {
-                onEditToggle(); // Exit edit mode
+                console.log('Successfully updated teaching style');
+                onEditToggle();
             }
-        } catch (error) {
-            console.error('Error saving teaching style:', error);
-            setValidationErrors(['Failed to save changes. Please try again.']);
+        } catch (err) {
+            console.error('Error saving teaching style', err);
+            setValidationErros(['Failed trying to save changes.'])
         } finally {
             setIsSaving(false);
         }
+
     };
 
-    // Handle canceling edits
     const handleCancel = () => {
-        // Reset to original values
         setEditedPhilosophy(teachingStyle.philosophy || '');
         setEditedMethodology(teachingStyle.methodology || '');
         setEditedApproaches(teachingStyle.approaches || []);
-        setValidationErrors([]);
 
-        // Exit edit mode
         onEditToggle();
     };
 
-    // Handle adding a new approach
     const addApproach = () => {
         setEditedApproaches([...editedApproaches, '']);
     };
 
-    // Handle updating an approach
     const updateApproach = (index: number, value: string) => {
         const newApproaches = [...editedApproaches];
         newApproaches[index] = value;
         setEditedApproaches(newApproaches);
     };
 
-    // Handle removing an approach
     const removeApproach = (index: number) => {
         const newApproaches = [...editedApproaches];
         newApproaches.splice(index, 1);
@@ -124,15 +116,7 @@ const TeachingStyle: React.FC<TeachingStyleComponentProps> = ({
             <section id="teaching-style" className="profile-section">
                 <div className="section-header">
                     <h2>Teaching Style</h2>
-                    {isEditable && (
-                        <button
-                            className="edit-btn"
-                            onClick={onEditToggle}
-                            aria-label="Edit teaching style"
-                        >
-                            <i className="fas fa-edit"></i> Edit Teaching Style
-                        </button>
-                    )}
+
                 </div>
 
                 <div className="teaching-style-content">
@@ -271,4 +255,8 @@ const TeachingStyle: React.FC<TeachingStyleComponentProps> = ({
     );
 };
 
+
 export default TeachingStyle;
+
+
+

@@ -91,9 +91,16 @@ export interface CV {
     languages?: string[];
 }
 
-// Add teaching style type
+export interface TeachingStyle {
+    philosophy: string;
+    methodology?: string;
+    approaches: string[];
+}
 
-// Add personal rules type
+export interface PersonalRules {
+    rules: string[];
+    disclaimer?: string;
+}
 
 export interface Teacher {
     id: string;
@@ -114,8 +121,8 @@ export interface Teacher {
         profilePicture: string;
         landscapePicture: string;
     };
-    // teaching style
-    // personal rules
+    teachingStyle?: TeachingStyle;
+    personalRules?: PersonalRules;
     // headerinfo ???
 }
 

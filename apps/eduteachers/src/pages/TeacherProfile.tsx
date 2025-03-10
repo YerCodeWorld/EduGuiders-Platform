@@ -11,7 +11,7 @@ import Bio from '../components/profile/Bio';
 import CV from '../components/profile/CV';
 import Contact from '../components/profile/Contact';
 import {ProfileSectionType} from "@/types";
-// import TeachingStyle from '../components/profile/TeachingStyle';
+import TeachingStyle from '../components/profile/TeachingStyle';
 // import PersonalRules from '../components/profile/PersonalRules';
 import Posts from '../components/profile/Posts';
 import '../styles/pages/teacherProfile.css';
@@ -200,7 +200,15 @@ const TeacherProfile: React.FC = () => {
                     />
                 )}
 
-                {/*Implement teaching style section*/}
+                {activeSection === 'teachingStyle' && (
+                    <TeachingStyle
+                        teachingStyle={teacher.teachingStyle || { approaches: [], philosophy: '', methodology: '' }}
+                        isEditable={canEdit}
+                        isEditing={isEditing}
+                        teacherId={teacher.id}
+                        onEditToggle={toggleEditMode}
+                    />
+                )}
 
                 {/*Implement personal rules section*/}
 
