@@ -1,86 +1,79 @@
-// src/components/profile/TeachingStyle.tsx
+// src/components/profile/PersonalRules.tsx
 import React, { useState, useEffect, useCallback } from 'react';
-import { TeachingStyle as TeachingStyleProps } from '@/types';
-import { useTeachers } from '../contexts';
-import '../../styles/components/profile/teachingStyle.css';
+import { PersonalRules as PersonalRulesProps } from '@/types';
+import { useTeachers } from '../../contexts';
+import '../../styles/components/profile/personalRules.css';
 
-interface TeachingStyleComponentProps {
-    teachingStyle: TeachingStyleProps;
+interface PersonalRulesComponentProps {
+    personalRules: PersonalRulesProps;
     isEditable: boolean;
     isEditing: boolean;
     teacherId: string;
     onEditToggle: () => void;
 }
 
-const TeachingStyle: React.FC<TeachingStyleComponentProps> = ({
-                                                                  teachingStyle,
+const PersonalRules: React.FC<PersonalRulesComponentProps> = ({
+                                                                  personalRules,
                                                                   isEditable,
                                                                   isEditing,
                                                                   teacherId,
-                                                  onEditToggle,
- }) => {
-    const { updateTeachingStyle } = useTeachers();
+                                                                  onEditToggle
+                                                              }) => {
+    const { updatePersonalRules } = useTeachers();
 
     // Component state
-    const [editedPhilosophy, setEditedPhilosophy] = useState<string>('');
-    const [editedMethodology, setEditedMethodology] = useState<string>('');
-    const [editedApproaches, setEditedApproaches] = useState<string[]>([]);
+    const [editedRules, setEditedRules] = useState<string[]>([]);
+    const [editedDisclaimer, setEditedDisclaimer] = useState<string>('');
     const [validationErrors, setValidationErrors] = useState<string[]>([]);
     const [isSaving, setIsSaving] = useState<boolean>(false);
 
     // Initialize state from props
     useEffect(() => {
-        if (teachingStyle) {
-            setEditedPhilosophy(teachingStyle.philosophy || '');
-            setEditedMethodology(teachingStyle.methodology || '');
-            setEditedApproaches(teachingStyle.approaches || []);
+        if (personalRules) {
+            setEditedRules(personalRules.rules || []);
+            setEditedDisclaimer(personalRules.disclaimer || '');
         }
 
         // Clear validation errors when toggling edit mode
         if (!isEditing) {
             setValidationErrors([]);
         }
-    }, [teachingStyle, isEditing]);
+    }, [personalRules, isEditing]);
 
     // Validate data before saving
-    const validateTeachingStyle = useCallback((): boolean => {
+    const validatePersonalRules = useCallback((): boolean => {
         const errors: string[] = [];
 
-        if (!editedPhilosophy.trim()) {
-            errors.push('Teaching philosophy is required');
-        }
-
-        if (!editedApproaches.length) {
-            errors.push('At least one teaching approach is required');
-        } else if (editedApproaches.some(approach => !approach.trim())) {
-            errors.push('Teaching approaches cannot be empty');
+        if (!editedRules.length) {
+            errors.push('At least one rule is required');
+        } else if (editedRules.some(rule => !rule.trim())) {
+            errors.push('Rules cannot be empty');
         }
 
         setValidationErrors(errors);
         return errors.length === 0;
-    }, [editedPhilosophy, editedApproaches]);
+    }, [editedRules]);
 
     // Handle saving changes
     const handleSave = async () => {
-        if (!validateTeachingStyle()) {
+        if (!validatePersonalRules()) {
             return;
         }
 
         setIsSaving(true);
         try {
-            const updatedTeachingStyle: TeachingStyleProps = {
-                philosophy: editedPhilosophy,
-                methodology: editedMethodology,
-                approaches: editedApproaches.filter(approach => approach.trim() !== '')
+            const updatedPersonalRules: PersonalRulesProps = {
+                rules: editedRules.filter(rule => rule.trim() !== ''),
+                disclaimer: editedDisclaimer
             };
 
-            const success = await updateTeachingStyle(teacherId, updatedTeachingStyle);
+            const success = await updatePersonalRules(teacherId, updatedPersonalRules);
 
             if (success) {
                 onEditToggle(); // Exit edit mode
             }
         } catch (error) {
-            console.error('Error saving teaching style:', error);
+            console.error('Error saving personal rules:', error);
             setValidationErrors(['Failed to save changes. Please try again.']);
         } finally {
             setIsSaving(false);
@@ -90,80 +83,70 @@ const TeachingStyle: React.FC<TeachingStyleComponentProps> = ({
     // Handle canceling edits
     const handleCancel = () => {
         // Reset to original values
-        setEditedPhilosophy(teachingStyle.philosophy || '');
-        setEditedMethodology(teachingStyle.methodology || '');
-        setEditedApproaches(teachingStyle.approaches || []);
+        setEditedRules(personalRules.rules || []);
+        setEditedDisclaimer(personalRules.disclaimer || '');
         setValidationErrors([]);
 
         // Exit edit mode
         onEditToggle();
     };
 
-    // Handle adding a new approach
-    const addApproach = () => {
-        setEditedApproaches([...editedApproaches, '']);
+    // Handle adding a new rule
+    const addRule = () => {
+        setEditedRules([...editedRules, '']);
     };
 
-    // Handle updating an approach
-    const updateApproach = (index: number, value: string) => {
-        const newApproaches = [...editedApproaches];
-        newApproaches[index] = value;
-        setEditedApproaches(newApproaches);
+    // Handle updating a rule
+    const updateRule = (index: number, value: string) => {
+        const newRules = [...editedRules];
+        newRules[index] = value;
+        setEditedRules(newRules);
     };
 
-    // Handle removing an approach
-    const removeApproach = (index: number) => {
-        const newApproaches = [...editedApproaches];
-        newApproaches.splice(index, 1);
-        setEditedApproaches(newApproaches);
+    // Handle removing a rule
+    const removeRule = (index: number) => {
+        const newRules = [...editedRules];
+        newRules.splice(index, 1);
+        setEditedRules(newRules);
     };
 
     // Display mode (not editing)
     if (!isEditable || !isEditing) {
         return (
-            <section id="teaching-style" className="profile-section">
+            <section id="personal-rules" className="profile-section">
                 <div className="section-header">
-                    <h2>Teaching Style</h2>
+                    <h2>Personal Rules</h2>
                     {isEditable && (
                         <button
                             className="edit-btn"
                             onClick={onEditToggle}
-                            aria-label="Edit teaching style"
+                            aria-label="Edit personal rules"
                         >
-                            <i className="fas fa-edit"></i> Edit Teaching Style
+                            <i className="fas fa-edit"></i> Edit Personal Rules
                         </button>
                     )}
                 </div>
 
-                <div className="teaching-style-content">
-                    <div className="teaching-philosophy">
-                        <h3>Teaching Philosophy</h3>
-                        {teachingStyle.philosophy ? (
-                            <p>{teachingStyle.philosophy}</p>
-                        ) : (
-                            <p className="empty-content">No teaching philosophy provided yet.</p>
-                        )}
-                    </div>
-
-                    <div className="teaching-approaches">
-                        <h3>Teaching Approaches</h3>
-                        {teachingStyle.approaches && teachingStyle.approaches.length > 0 ? (
-                            <ul className="approaches-list">
-                                {teachingStyle.approaches.map((approach, index) => (
-                                    <li key={index} className="approach-item">
-                                        {approach}
+                <div className="personal-rules-content">
+                    <div className="rules-list">
+                        <h3>Classroom Rules & Expectations</h3>
+                        {personalRules.rules && personalRules.rules.length > 0 ? (
+                            <ol className="rules">
+                                {personalRules.rules.map((rule, index) => (
+                                    <li key={index} className="rule-item">
+                                        {rule}
                                     </li>
                                 ))}
-                            </ul>
+                            </ol>
                         ) : (
-                            <p className="empty-content">No teaching approaches provided yet.</p>
+                            <p className="empty-content">No personal rules provided yet.</p>
                         )}
                     </div>
 
-                    {teachingStyle.methodology && (
-                        <div className="teaching-methodology">
-                            <h3>Methodology</h3>
-                            <p>{teachingStyle.methodology}</p>
+                    {personalRules.disclaimer && (
+                        <div className="rules-disclaimer">
+                            <h3>Additional Information</h3>
+                            <p>{personalRules.disclaimer}</p>
                         </div>
                     )}
                 </div>
@@ -173,9 +156,9 @@ const TeachingStyle: React.FC<TeachingStyleComponentProps> = ({
 
     // Edit mode
     return (
-        <section id="teaching-style" className="profile-section">
+        <section id="personal-rules" className="profile-section">
             <div className="section-header">
-                <h2>Edit Teaching Style</h2>
+                <h2>Edit Personal Rules</h2>
             </div>
 
             {validationErrors.length > 0 && (
@@ -188,37 +171,27 @@ const TeachingStyle: React.FC<TeachingStyleComponentProps> = ({
                 </div>
             )}
 
-            <div className="teaching-style-edit-form">
+            <div className="personal-rules-edit-form">
                 <div className="form-group">
-                    <label htmlFor="philosophy">Teaching Philosophy</label>
-                    <textarea
-                        id="philosophy"
-                        value={editedPhilosophy}
-                        onChange={(e) => setEditedPhilosophy(e.target.value)}
-                        placeholder="Describe your teaching philosophy..."
-                        rows={5}
-                        required
-                    />
+                    <label>Classroom Rules & Expectations</label>
                     <p className="field-help">
-                        Share your fundamental beliefs about teaching and learning
+                        List the rules and expectations for your students during sessions
                     </p>
-                </div>
 
-                <div className="form-group">
-                    <label>Teaching Approaches</label>
-                    {editedApproaches.map((approach, index) => (
-                        <div key={index} className="approach-input">
+                    {editedRules.map((rule, index) => (
+                        <div key={index} className="rule-input">
                             <input
                                 type="text"
-                                value={approach}
-                                onChange={(e) => updateApproach(index, e.target.value)}
-                                placeholder="e.g., Project-based learning"
+                                value={rule}
+                                onChange={(e) => updateRule(index, e.target.value)}
+                                placeholder={`Rule #${index + 1}`}
+                                aria-label={`Rule ${index + 1}`}
                             />
                             <button
-                                className="remove-approach-btn"
-                                onClick={() => removeApproach(index)}
-                                aria-label="Remove approach"
-                                disabled={editedApproaches.length <= 1}
+                                className="remove-rule-btn"
+                                onClick={() => removeRule(index)}
+                                aria-label="Remove rule"
+                                disabled={editedRules.length <= 1}
                             >
                                 <i className="fas fa-times"></i>
                             </button>
@@ -226,25 +199,25 @@ const TeachingStyle: React.FC<TeachingStyleComponentProps> = ({
                     ))}
 
                     <button
-                        className="add-approach-btn"
-                        onClick={addApproach}
-                        aria-label="Add approach"
+                        className="add-rule-btn"
+                        onClick={addRule}
+                        aria-label="Add rule"
                     >
-                        <i className="fas fa-plus"></i> Add Approach
+                        <i className="fas fa-plus"></i> Add Rule
                     </button>
                 </div>
 
                 <div className="form-group">
-                    <label htmlFor="methodology">Methodology (Optional)</label>
+                    <label htmlFor="disclaimer">Additional Information (Optional)</label>
                     <textarea
-                        id="methodology"
-                        value={editedMethodology}
-                        onChange={(e) => setEditedMethodology(e.target.value)}
-                        placeholder="Describe your teaching methodology..."
+                        id="disclaimer"
+                        value={editedDisclaimer}
+                        onChange={(e) => setEditedDisclaimer(e.target.value)}
+                        placeholder="Add any additional information or disclaimer..."
                         rows={4}
                     />
                     <p className="field-help">
-                        Explain the specific methods you use in your teaching
+                        You can provide additional context or important notes about your teaching approach
                     </p>
                 </div>
 
@@ -271,4 +244,4 @@ const TeachingStyle: React.FC<TeachingStyleComponentProps> = ({
     );
 };
 
-export default TeachingStyle;
+export default PersonalRules;

@@ -9,8 +9,8 @@ import {
     TimeSlot,
     BookingRequest,
     Post,
-    // TeachingStyle,
-    // PersonalRules
+    TeachingStyle,
+    PersonalRules
 } from '@/types';
 // yeah mockdata bro. Wondering if I will use them in production for marketing purposes
 import { mockTeachers, mockBookings } from '../data/mockData';
@@ -476,9 +476,40 @@ export const TeachersProvider = ({ children }: TeachersProviderProps) => {
         }
     };
 
-    // Update teaching style logic
+    // Update teaching style
+    const updateTeachingStyle = async (teacherId: string, teachingStyle: TeachingStyle): Promise<boolean> => {
+        try {
+            // Validate inputs
+            if (!teacherId || !teachingStyle) {
+                // setError('Invalid teaching style data: Missing required fields');
+                return false;
+            }
 
-    // Update Personal rules logic
+            return await updateTeacherSection(teacherId, 'teachingStyle', teachingStyle);
+        } catch (error) {
+            console.error('Failed to update teaching style:', error);
+            // setError('Failed to update teaching style. Please try again.');
+            return false;
+        }
+    };
+
+    // Update personal rules
+    const updatePersonalRules = async (teacherId: string, personalRules: PersonalRules): Promise<boolean> => {
+        try {
+            // Validate inputs
+            if (!teacherId || !personalRules) {
+                // setError('Invalid personal rules data: Missing required fields');
+                return false;
+            }
+
+            return await updateTeacherSection(teacherId, 'personalRules', personalRules);
+        } catch (error) {
+            console.error('Failed to update personal rules:', error);
+            // setError('Failed to update personal rules. Please try again.');
+            return false;
+        }
+    };
+
 
     return (
         <TeachersContext.Provider
@@ -495,9 +526,9 @@ export const TeachersProvider = ({ children }: TeachersProviderProps) => {
                 updateBookingStatus,
                 createPost,
                 updatePost,
-                deletePost
-                // updateTeachingStyle
-                // updatePersonalRules
+                deletePost,
+                updateTeachingStyle,
+                updatePersonalRules
             }}
         >
             {children}

@@ -12,7 +12,7 @@ import CV from '../components/profile/CV';
 import Contact from '../components/profile/Contact';
 import {ProfileSectionType} from "@/types";
 import TeachingStyle from '../components/profile/TeachingStyle';
-// import PersonalRules from '../components/profile/PersonalRules';
+import PersonalRules from '../components/profile/PersonalRules';
 import Posts from '../components/profile/Posts';
 import '../styles/pages/teacherProfile.css';
 
@@ -210,7 +210,15 @@ const TeacherProfile: React.FC = () => {
                     />
                 )}
 
-                {/*Implement personal rules section*/}
+                {activeSection === 'personalRules' && (
+                    <PersonalRules
+                        personalRules={teacher.personalRules || { rules: [], disclaimer: '' }}
+                        isEditable={canEdit}
+                        isEditing={isEditing}
+                        teacherId={teacher.id}
+                        onEditToggle={toggleEditMode}
+                    />
+                )}
 
             </div>
 
