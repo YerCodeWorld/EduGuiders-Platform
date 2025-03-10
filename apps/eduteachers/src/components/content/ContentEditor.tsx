@@ -1,8 +1,8 @@
 // src/components/content/ContentEditor.tsx
 import React, { useState, useEffect, useCallback } from 'react';
-import { Post } from '@/types';
+import { Post } from '../../types';
 import { useTeachers } from '../../contexts';
-import '../../styles/components/content/contentEditor.css';
+import '../../styles/pages/contentEditor.css';
 
 interface ContentEditorProps {
     post?: Post; // Undefined for new posts

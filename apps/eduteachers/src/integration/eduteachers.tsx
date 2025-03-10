@@ -2,6 +2,9 @@ import { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { MainLayout } from '../../../../packages/ui/src/exports.ts';
 import {getRandomInt} from "../../../../packages/ui/src/methods.ts";
+import ContentManagement from "../components/content/ContentManagement.tsx"
+import { UserRole } from "../../../../packages/ui/src/exports.ts";
+import ProtectedRoute from "@repo/ui/components/common/ProtectedRoute";
 
 // Lazy load components
 const TeacherSelector = lazy(() => import('../pages/TeacherSelector'));
@@ -32,6 +35,12 @@ export const EduTeachersRoutes = () => {
                     <Suspense fallback={ <p>{loadingPhrases[getRandomInt(0, loadingPhrases.length - 1)]}</p>}>
                         <TeacherProfile />
                     </Suspense>
+                } />
+
+                <Route path="/teacher/content" element={
+                    <ProtectedRoute allowedRoles={[UserRole.TEACHER]}>
+                        <ContentManagement />
+                    </ProtectedRoute>
                 } />
 
                 {/* Protected routes */}
