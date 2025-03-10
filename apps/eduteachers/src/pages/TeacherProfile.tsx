@@ -1,91 +1,141 @@
 // src/pages/TeacherProfile.tsx
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { useTeachers } from '../contexts/TeachersContext.tsx';
-import { useAuth, UserRole } from '../../../../packages/ui/src/contexts/AuthContext';
+import React, {useCallback, useEffect, useState} from 'react';
+import {useLocation, useNavigate, useParams} from 'react-router-dom';
+import {useTeachers} from '../contexts';
+import {useAuth, UserRole} from '@repo/ui/contexts/AuthContext';
+import {getRandomInt} from "../../../../packages/ui/src/methods.ts";
 import ProfileHeader from '../components/profile/ProfileHeader';
 import ProfileNavigation from '../components/profile/ProfileNavigation';
 import Availability from '../components/profile/Availability';
 import Bio from '../components/profile/Bio';
 import CV from '../components/profile/CV';
 import Contact from '../components/profile/Contact';
+import {ProfileSectionType} from "@/types";
+// import TeachingStyle from '../components/profile/TeachingStyle';
+// import PersonalRules from '../components/profile/PersonalRules';
 import Posts from '../components/profile/Posts';
 import '../styles/pages/teacherProfile.css';
 
-type SectionType = 'availability' | 'bio' | 'cv' | 'contact';
+
+// Previous implementation: type SectionType = 'availability' | 'bio' | 'cv' | 'contact';
+// now:
 
 const TeacherProfile: React.FC = () => {
     const { id } = useParams<{ id: string }>();
+    // with enhanced teacher context, will be adding a 'error' value
     const { getTeacher, loading } = useTeachers();
     const { user, hasRole } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
-
-    const [activeSection, setActiveSection] = useState<SectionType>('availability');
+    // useState for toggling sections. Setting availability as default.
+    const [activeSection, setActiveSection] = useState<ProfileSectionType>('availability');
     const [isEditing, setIsEditing] = useState(false);
 
-    // Check if the URL has a query parameter for action
+    // Get teacher data ensuring null/undefined handling
+    const teacherId = id || '';
+    const teacher = teacherId? getTeacher(teacherId) : undefined;
+
+    const loadingPhrases = [
+        "Yahir is the best teacher in the world",
+        "Paying in DOP is cheaper than dollars",
+        "More than teachers, we are your close friends",
+        "Did you know you can set modes? Agressive teaching, compassionate teaching, ...",
+        "Why are some people so intelligent?"
+    ]
+
+
+    // Check URL parameters on load ??
     useEffect(() => {
         const params = new URLSearchParams(location.search);
         const action = params.get('action');
+        const section = params.get('section') as ProfileSectionType | null;
+
+        // Set active section
+        if (section && isValidSection(section)) {
+            setActiveSection(section);
+        }
+
+        // Making sure book availability is the active section if action is booking.
         if (action === 'book') {
             setActiveSection('availability');
         }
     }, [location]);
 
-    // Get teacher data
-    const teacher = id ? getTeacher(id) : undefined;
+    // booleansssss
+    const isValidSection = (section: string): section is ProfileSectionType => {
+        return ['availability', 'bio', 'cv', 'teachingStyle', 'personalRules'].includes(section);
+    }
 
-    // Update document title
+    // Changing to new section, update document title
     useEffect(() => {
         if (teacher) {
+            // This is a nice touch, isn't it?
             document.title = `${teacher.name} | Teacher Profile`;
         } else {
             document.title = 'Teacher Profile';
         }
-    }, [teacher]);
+    }, [teacher])
 
-    // Check if the current logged-in user is this teacher
-    const canEdit = hasRole(UserRole.TEACHER) &&
-        teacher && user?.id === id;
+    // By identifying the type of user if any, we set up this boolean
+    const canEdit: boolean | undefined = hasRole(UserRole.TEACHER) &&
+        teacher && user?.id === teacherId;
 
-    // Handler for navigation
-    const handleSectionChange = (section: SectionType) => {
+    console.log('Can the user edit? ', canEdit);
+    console.log(`Has role: ${UserRole.TEACHER}`);
+    console.log('Teacher:', teacher);
+    console.log(`User Id: ${user?.id} \n TeacherId: ${teacher.id}`);
+
+    // Changing section logic
+    const handleSectionChange = useCallback((section: ProfileSectionType) => {
         setActiveSection(section);
-        // Reset editing mode when switching sections
+        // Reseting editing mode when switching sections ??
         setIsEditing(false);
-    };
 
-    // Toggle edit mode (only for teachers editing their own profile)
-    const toggleEditMode = () => {
+        // This is supposed to allow us to update the URL without reloading the page
+        const searchParams = new URLSearchParams(location.search);
+        searchParams.set('section', section);
+        navigate(`${location.pathname}?${searchParams.toString()}`, { replace: true });
+
+    }, [location.pathname, location.search, navigate]);
+
+    // Only for teachers: Toggle editing mode
+    const toggleEditMode = useCallback(() => {
         if (canEdit) {
-            setIsEditing(!isEditing);
+            // Negate yourself! Negate yourself!
+            setIsEditing(prevState => !prevState);
         }
-    };
+    }, [canEdit])
 
-    // Handle going back
-    const handleBack = () => {
+    // ??? Is there a back button or something?
+    const handleBack = useCallback(() => {
         navigate(-1);
-    };
+    }, [navigate]);
 
+    // Show loader. With custom random phrases of course.
     if (loading) {
         return (
-            <div className="loading">
-                <p>Loading profile...</p>
+            <div className="Loading">
+                <p>{loadingPhrases[getRandomInt(0, loadingPhrases.length - 1)]}</p>
             </div>
         );
     }
 
+    // Implement error state
+    //
+    //
+    //
+    //
+    //
+
     if (!teacher) {
         return (
             <div className="teacher-not-found">
-                <h2>Teacher Not Found</h2>
-                <p>The teacher you're looking for doesn't exist or has been removed.</p>
-                <button className="back-button" onClick={handleBack}>
-                    Back to Teachers
-                </button>
+                <h2>Error loading this profile.</h2>
+                {/*Add p element showing error*/}
+                {/*OH, there IS a back button...*/}
+                <button className="back-button" onClick={handleBack}>Back to teachers</button>
             </div>
-        );
+        )
     }
 
     return (
@@ -98,6 +148,8 @@ const TeacherProfile: React.FC = () => {
                 teacherId={teacher.id}
                 onBack={handleBack}
                 canEdit={canEdit}
+                isEditing={isEditing && activeSection === 'bio'}
+                onToggleEdit={toggleEditMode}
             />
 
             <ProfileNavigation
@@ -120,15 +172,20 @@ const TeacherProfile: React.FC = () => {
                 {activeSection === 'bio' && (
                     <Bio
                         bio={teacher.bio}
-                        isEditable={canEdit && isEditing}
+                        isEditable={canEdit}
+                        isEditing={isEditing}
                         teacherId={teacher.id}
+                        onEditToggle={toggleEditMode}
                     />
                 )}
 
                 {activeSection === 'cv' && (
                     <CV
                         cv={teacher.cv}
-                        isEditable={canEdit && isEditing}
+                        isEditable={canEdit}
+                        isEditing={isEditing}
+                        teacherId={teacher.id}
+                        onEditToggle={toggleEditMode}
                     />
                 )}
 
@@ -137,13 +194,22 @@ const TeacherProfile: React.FC = () => {
                         contact={teacher.contact}
                         teacherId={teacher.id}
                         teacherName={teacher.name}
+                        isEditable={canEdit}
+                        isEditing={isEditing}
+                        onEditToggle={toggleEditMode}
                     />
                 )}
+
+                {/*Implement teaching style section*/}
+
+                {/*Implement personal rules section*/}
+
             </div>
 
             <Posts
                 posts={teacher.posts}
                 isEditable={canEdit && isEditing}
+                teacherId={teacher.id}
             />
         </div>
     );

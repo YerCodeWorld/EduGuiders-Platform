@@ -1,51 +1,111 @@
 // src/components/profile/Bio.tsx
-import React, { useState } from 'react';
-import { Bio as BioProp, ExpertiseArea } from '../../types';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Bio as BioProp, ExpertiseArea } from '@/types';
 import { useTeachers } from '../../contexts';
 import '../../styles/components/profile/bio.css';
 
 interface BioComponentProps {
     bio: BioProp;
-    isEditable: boolean;
+    isEditable: boolean | undefined;
     teacherId: string;
+    isEditing: boolean;
+    onEditToggle: () => void;
 }
 
-const Bio: React.FC<BioComponentProps> = ({ bio, isEditable, teacherId }) => {
-    const { getTeacher, updateTeacher } = useTeachers();
+const Bio: React.FC<BioComponentProps> = ({
+                                              bio,
+                                              isEditable,
+                                              isEditing,
+                                              teacherId,
+                                              onEditToggle
+                                        }) => {
 
-    // State for editing
-    const [editedIntroduction, setEditedIntroduction] = useState<string[]>([...bio.introduction]);
-    const [editedQuote, setEditedQuote] = useState(bio.quote || '');
-    const [editedExpertiseAreas, setEditedExpertiseAreas] = useState<ExpertiseArea[]>([...bio.expertiseAreas]);
-    const [isEditing, setIsEditing] = useState(false);
+
+    const { updateTeacherSection } = useTeachers();
+
+    // State for editing with proper initialization
+    const [editedIntroduction, setEditedIntroduction] = useState<string[]>([]);
+    const [editedQuote, setEditedQuote] = useState<string>('');
+    const [editedExpertiseAreas, setEditedExpertiseAreas] = useState<ExpertiseArea[]>([]);
+    const [validationErrors, setValidationErrors] = useState<string[]>([]);
+    const [isSaving, setIsSaving] = useState(false);
+
+    // State for editing with proper initialization
+    useEffect(() => {
+        if (bio) {
+            setEditedIntroduction(bio.introduction ? [...bio.introduction] : []);
+            setEditedQuote(bio.quote || '');
+            setEditedExpertiseAreas(bio.expertiseAreas ? [...bio.expertiseAreas] : []);
+        }
+
+        if (!isEditing) {
+            setValidationErrors([])
+        }
+
+    }, [bio, isEditing])
+
+    // Let's go to validate the data, why not
+    const validateBio = useCallback((): boolean => {
+        const errors: string[] = [];
+
+        if (!editedIntroduction.length) {
+            errors.push('At least one introduction paragraph is required')
+        } else if (editedIntroduction.some(para => !para.trim())) {
+            errors.push('Introduction paragraphs cannot be empty')
+        }
+
+        if (!editedExpertiseAreas.length) {
+            errors.push('At least one area of expertise is required')
+        } else if (editedExpertiseAreas.some(area => !area.name.trim())) {
+            errors.push('Expertise area names cannot be empty');
+        }
+
+        setValidationErrors(errors);
+        return errors.length === 0;
+    }, [editedIntroduction, editedExpertiseAreas]);
 
     // Save edits
-    const handleSave = () => {
-        // Get the current teacher data
-        const teacher = getTeacher(teacherId);
-        if (!teacher) return;
+    const handleSave = async () => {
 
-        // Update bio with edited values
-        const updatedTeacher = {
-            ...teacher,
-            bio: {
-                ...teacher.bio,
+        if (!validateBio()) {
+            return;
+        }
+
+        setIsSaving(true);
+
+        try {
+
+            const updatedBio: BioProp = {
                 introduction: editedIntroduction,
                 quote: editedQuote,
-                expertiseAreas: editedExpertiseAreas
+                expertiseAreas: editedExpertiseAreas,
+                teacherId
             }
-        };
 
-        updateTeacher(updatedTeacher);
-        setIsEditing(false);
+            const success = await updateTeacherSection(teacherId, 'bio', updatedBio);
+
+            if (success) {
+                onEditToggle();
+            }
+
+        } catch (err) {
+            console.error('Error saving bio:', err);
+            setValidationErrors(['Failed to save changes. Please try again.']);
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     // Cancel edits
     const handleCancel = () => {
-        setEditedIntroduction([...bio.introduction]);
+        // Reset to original values
+        setEditedIntroduction(bio.introduction ? [...bio.introduction] : []);
         setEditedQuote(bio.quote || '');
-        setEditedExpertiseAreas([...bio.expertiseAreas]);
-        setIsEditing(false);
+        setEditedExpertiseAreas(bio.expertiseAreas ? [...bio.expertiseAreas] : []);
+        setValidationErrors([]);
+
+        // Exit edit mode
+        onEditToggle();
     };
 
     // Add new paragraph to introduction
@@ -73,9 +133,8 @@ const Bio: React.FC<BioComponentProps> = ({ bio, isEditable, teacherId }) => {
     };
 
     // Update expertise area
-    const updateExpertiseArea = (index: number, field: 'icon' | 'name', value: string) => {
+    const updateExpertiseArea = (index: number, field: keyof ExpertiseArea, value: string) => {
         const newAreas = [...editedExpertiseAreas];
-        // @ts-ignore
         newAreas[index] = { ...newAreas[index], [field]: value };
         setEditedExpertiseAreas(newAreas);
     };
@@ -87,43 +146,42 @@ const Bio: React.FC<BioComponentProps> = ({ bio, isEditable, teacherId }) => {
         setEditedExpertiseAreas(newAreas);
     };
 
-    // Display mode (not editing)
     if (!isEditable || !isEditing) {
         return (
             <section id="bio" className="profile-section">
-                <h2>Biography</h2>
+                <div className="section-header">
+                    <h2>Biography</h2>
+                    {isEditable && (
+                        <button
+                            className="edit-bio-btn"
+                            onClick={onEditToggle}
+                            aria-label="Edit biography"
+                        >
+                            <i className="fas fa-edit"></i> Edit Biography
+                        </button>
+                    )}
+                </div>
 
                 <div className="bio-content">
-                    {bio.introduction.map((paragraph, index) => (
-                        <p key={index}>{paragraph}</p>
+                    {bio.introduction && bio.introduction.map((paragraph, index) => (
+                        <p key={index} className="bio-paragraph">{paragraph}</p>
                     ))}
 
                     {bio.quote && (
-                        <blockquote>
+                        <blockquote className="bio-quote">
                             {bio.quote}
                         </blockquote>
                     )}
 
                     <h3>Areas of Expertise</h3>
                     <div className="expertise-areas">
-                        {bio.expertiseAreas.map((area, index) => (
+                        {bio.expertiseAreas && bio.expertiseAreas.map((area, index) => (
                             <div key={index} className="expertise-item">
-                                <i className={`fas fa-${area.icon}`}></i>
+                                <i className={`fas fa-${area.icon}`} aria-hidden="true"></i>
                                 <h4>{area.name}</h4>
                             </div>
                         ))}
                     </div>
-
-                    {isEditable && (
-                        <div className="edit-actions">
-                            <button
-                                className="edit-bio-btn"
-                                onClick={() => setIsEditing(true)}
-                            >
-                                <i className="fas fa-edit"></i> Edit Biography
-                            </button>
-                        </div>
-                    )}
                 </div>
             </section>
         );
@@ -132,25 +190,40 @@ const Bio: React.FC<BioComponentProps> = ({ bio, isEditable, teacherId }) => {
     // Edit mode
     return (
         <section id="bio" className="profile-section">
-            <h2>Edit Biography</h2>
+            <div className="section-header">
+                <h2>Edit Biography</h2>
+            </div>
+
+            {validationErrors.length > 0 && (
+                <div className="validation-errors">
+                    <ul>
+                        {validationErrors.map((error, index) => (
+                            <li key={index} className="error-message">{error}</li>
+                        ))}
+                    </ul>
+                </div>
+            )}
 
             <div className="bio-edit-form">
                 <h3>Introduction</h3>
                 <div className="introduction-editor">
                     {editedIntroduction.map((paragraph, index) => (
                         <div key={index} className="paragraph-editor">
-              <textarea
-                  value={paragraph}
-                  onChange={(e) => updateParagraph(index, e.target.value)}
-                  placeholder="Add paragraph content..."
-                  rows={3}
-              />
+                            <textarea
+                                value={paragraph}
+                                onChange={(e) => updateParagraph(index, e.target.value)}
+                                placeholder="Add paragraph content..."
+                                rows={3}
+                                aria-label={`Paragraph ${index + 1}`}
+                            />
                             <button
                                 className="remove-paragraph-btn"
                                 onClick={() => removeParagraph(index)}
                                 title="Remove paragraph"
+                                aria-label="Remove paragraph"
+                                disabled={editedIntroduction.length <= 1}
                             >
-                                <i className="fas fa-trash-alt"></i>
+                                <i className="fas fa-trash-alt" aria-hidden="true"></i>
                             </button>
                         </div>
                     ))}
@@ -158,8 +231,9 @@ const Bio: React.FC<BioComponentProps> = ({ bio, isEditable, teacherId }) => {
                     <button
                         className="add-paragraph-btn"
                         onClick={addParagraph}
+                        aria-label="Add new paragraph"
                     >
-                        <i className="fas fa-plus"></i> Add Paragraph
+                        <i className="fas fa-plus" aria-hidden="true"></i> Add Paragraph
                     </button>
                 </div>
 
@@ -170,6 +244,7 @@ const Bio: React.FC<BioComponentProps> = ({ bio, isEditable, teacherId }) => {
                         onChange={(e) => setEditedQuote(e.target.value)}
                         placeholder="Add an inspirational quote..."
                         rows={2}
+                        aria-label="Quote"
                     />
                 </div>
 
@@ -178,8 +253,9 @@ const Bio: React.FC<BioComponentProps> = ({ bio, isEditable, teacherId }) => {
                     {editedExpertiseAreas.map((area, index) => (
                         <div key={index} className="expertise-area-editor">
                             <div className="expertise-field">
-                                <label>Icon:</label>
+                                <label htmlFor={`icon-select-${index}`}>Icon:</label>
                                 <select
+                                    id={`icon-select-${index}`}
                                     value={area.icon}
                                     onChange={(e) => updateExpertiseArea(index, 'icon', e.target.value)}
                                 >
@@ -205,8 +281,9 @@ const Bio: React.FC<BioComponentProps> = ({ bio, isEditable, teacherId }) => {
                             </div>
 
                             <div className="expertise-field">
-                                <label>Name:</label>
+                                <label htmlFor={`area-name-${index}`}>Name:</label>
                                 <input
+                                    id={`area-name-${index}`}
                                     type="text"
                                     value={area.name}
                                     onChange={(e) => updateExpertiseArea(index, 'name', e.target.value)}
@@ -218,8 +295,10 @@ const Bio: React.FC<BioComponentProps> = ({ bio, isEditable, teacherId }) => {
                                 className="remove-expertise-btn"
                                 onClick={() => removeExpertiseArea(index)}
                                 title="Remove expertise"
+                                aria-label="Remove expertise area"
+                                disabled={editedExpertiseAreas.length <= 1}
                             >
-                                <i className="fas fa-trash-alt"></i>
+                                <i className="fas fa-trash-alt" aria-hidden="true"></i>
                             </button>
                         </div>
                     ))}
@@ -227,8 +306,9 @@ const Bio: React.FC<BioComponentProps> = ({ bio, isEditable, teacherId }) => {
                     <button
                         className="add-expertise-btn"
                         onClick={addExpertiseArea}
+                        aria-label="Add expertise area"
                     >
-                        <i className="fas fa-plus"></i> Add Expertise Area
+                        <i className="fas fa-plus" aria-hidden="true"></i> Add Expertise Area
                     </button>
                 </div>
 
@@ -236,14 +316,18 @@ const Bio: React.FC<BioComponentProps> = ({ bio, isEditable, teacherId }) => {
                     <button
                         className="cancel-btn"
                         onClick={handleCancel}
+                        disabled={isSaving}
+                        aria-label="Cancel editing"
                     >
                         Cancel
                     </button>
                     <button
                         className="save-btn"
                         onClick={handleSave}
+                        disabled={isSaving}
+                        aria-label="Save changes"
                     >
-                        Save Changes
+                        {isSaving ? 'Saving...' : 'Save Changes'}
                     </button>
                 </div>
             </div>

@@ -8,6 +8,9 @@ interface ContactProps {
     contact: ContactInfo;
     teacherId: string;
     teacherName: string;
+    isEditable: boolean | undefined;
+    isEditing: boolean;
+    onEditToggle: () => void;
 }
 
 const Contact: React.FC<ContactProps> = ({ contact, teacherName }) => {

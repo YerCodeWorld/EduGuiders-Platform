@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import '../styles/pages/authPages.css';
 
 const LoginPage = () => {
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState(false);

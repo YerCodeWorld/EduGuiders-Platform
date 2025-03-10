@@ -3,6 +3,8 @@
 
 export type TimeSlotStatus = 'available' | 'booked' | 'unavailable';
 
+export type ProfileSectionType = 'availability' | 'bio' | 'cv' | 'contact' | 'teachingStyle' | 'personalRules';
+
 export interface TimeSlot {
     id: string;
     day: 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun';
@@ -89,6 +91,10 @@ export interface CV {
     languages?: string[];
 }
 
+// Add teaching style type
+
+// Add personal rules type
+
 export interface Teacher {
     id: string;
     name: string;
@@ -102,6 +108,9 @@ export interface Teacher {
     posts: Post[];
     rating?: number;
     reviewCount?: number;
+    // teaching style
+    // personal rules
+    // headerinfo ???
 }
 
 export interface Booking {

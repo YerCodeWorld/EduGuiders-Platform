@@ -1,14 +1,14 @@
 // src/components/profile/CV.tsx
 import React, { useState, useEffect, useCallback } from 'react';
-import { CV as CVProps, Education, Experience, Certification } from '../../types';
-import { useTeachers } from "../../contexts";
+import { CV as CVProps, Education, Experience, Certification } from '@/types';
+import { useTeachers } from '../../contexts';
 import '../../styles/components/profile/cv.css';
 
 interface CVComponentProps {
-    teacherId: string;
     cv: CVProps;
-    isEditable: boolean | undefined;
+    isEditable: boolean;
     isEditing: boolean;
+    teacherId: string;
     onEditToggle: () => void;
 }
 
@@ -17,11 +17,11 @@ const CV: React.FC<CVComponentProps> = ({
                                             isEditable,
                                             isEditing,
                                             teacherId,
-                                            onEditToggle,
+                                            onEditToggle
                                         }) => {
-
     const { updateTeacherSection } = useTeachers();
 
+    // State for editing
     const [editedEducation, setEditedEducation] = useState<Education[]>([]);
     const [editedExperience, setEditedExperience] = useState<Experience[]>([]);
     const [editedCertifications, setEditedCertifications] = useState<Certification[]>([]);
@@ -30,61 +30,64 @@ const CV: React.FC<CVComponentProps> = ({
     const [validationErrors, setValidationErrors] = useState<string[]>([]);
     const [isSaving, setIsSaving] = useState(false);
 
+    // Initialize edit state
     useEffect(() => {
-
         if (cv) {
             setEditedEducation(cv.education ? [...cv.education] : []);
-            setEditedCertifications(cv.certifications ? [...cv.certifications] : []);
             setEditedExperience(cv.experience ? [...cv.experience] : []);
+            setEditedCertifications(cv.certifications ? [...cv.certifications] : []);
             setEditedSkills(cv.skills ? [...cv.skills] : []);
             setEditedLanguages(cv.languages ? [...cv.languages] : []);
         }
-
+        // Clear validation errors when toggling edit mode
         if (!isEditing) {
             setValidationErrors([]);
         }
-
     }, [cv, isEditing]);
 
-    const validateCV = useCallback(() => {
-        const errors = [];
+    // Validate CV data
+    const validateCV = useCallback((): boolean => {
+        const errors: string[] = [];
 
-        if (!editedEducation.length || !editedSkills.length) {
-            errors.push('At least one education or skill entry is required');
+        // Check if at least one education entry is present and valid
+        if (!editedEducation.length) {
+            errors.push('At least one education entry is required');
         } else if (editedEducation.some(edu => !edu.degree.trim() || !edu.institution.trim())) {
             errors.push('Education entries must include degree and institution');
         }
 
-        if (!editedExperience.length || !editedCertifications.length) {
-            errors.push('At least one professional experience or certifications entry is required');
+        // Check if at least one experience entry is present and valid
+        if (!editedExperience.length) {
+            errors.push('At least one professional experience entry is required');
         } else if (editedExperience.some(exp => !exp.position.trim() || !exp.company.trim())) {
             errors.push('Experience entries must include position and company');
         }
 
         setValidationErrors(errors);
         return errors.length === 0;
-    }, [editedEducation, editedCertifications, editedSkills, editedExperience]);
+    }, [editedEducation, editedExperience]);
 
+    // Save edits
     const handleSave = async () => {
-
-        if (!validateCV) {
+        if (!validateCV()) {
             return;
         }
 
         setIsSaving(true);
-
         try {
+            // Prepare updated CV
             const updatedCV: CVProps = {
                 education: editedEducation,
                 experience: editedExperience,
                 certifications: editedCertifications,
                 skills: editedSkills,
-                languages: editedLanguages,
+                languages: editedLanguages
             };
 
             const success = await updateTeacherSection(teacherId, 'cv', updatedCV);
 
             if (success) {
+                // Exit edit mode on successful save
                 onEditToggle();
             }
         } catch (error) {
@@ -95,8 +98,8 @@ const CV: React.FC<CVComponentProps> = ({
         }
     };
 
+    // Cancel edits
     const handleCancel = () => {
-
         // Reset to original values
         setEditedEducation(cv.education ? [...cv.education] : []);
         setEditedExperience(cv.experience ? [...cv.experience] : []);
@@ -107,9 +110,9 @@ const CV: React.FC<CVComponentProps> = ({
 
         // Exit edit mode
         onEditToggle();
-
     };
 
+    // Education CRUD operations
     const addEducation = () => {
         const newEducation: Education = {
             id: `edu-${Date.now()}`,
@@ -133,6 +136,7 @@ const CV: React.FC<CVComponentProps> = ({
         setEditedEducation(newEducation);
     };
 
+    // Experience CRUD operations
     const addExperience = () => {
         const newExperience: Experience = {
             id: `exp-${Date.now()}`,
@@ -150,17 +154,17 @@ const CV: React.FC<CVComponentProps> = ({
         setEditedExperience(newExperience);
     };
 
-    const addAchievement = (expIndex: number) => {
-        const newExperience = [...editedExperience];
-        newExperience[expIndex].achievements.push('');
-        setEditedExperience(newExperience);
-    };
-
     const updateAchievement = (expIndex: number, achievementIndex: number, value: string) => {
         const newExperience = [...editedExperience];
         const achievements = [...newExperience[expIndex].achievements];
         achievements[achievementIndex] = value;
         newExperience[expIndex] = { ...newExperience[expIndex], achievements };
+        setEditedExperience(newExperience);
+    };
+
+    const addAchievement = (expIndex: number) => {
+        const newExperience = [...editedExperience];
+        newExperience[expIndex].achievements.push('');
         setEditedExperience(newExperience);
     };
 
@@ -178,6 +182,7 @@ const CV: React.FC<CVComponentProps> = ({
         setEditedExperience(newExperience);
     };
 
+    // Certification CRUD operations
     const addCertification = () => {
         const newCertification: Certification = {
             id: `cert-${Date.now()}`,
@@ -309,6 +314,7 @@ const CV: React.FC<CVComponentProps> = ({
             </section>
         );
     }
+
     // Edit mode
     return (
         <section id="cv" className="profile-section">

@@ -10,7 +10,9 @@ interface ProfileHeaderProps {
     landscapePicture: string;
     teacherId: string;
     onBack: () => void;
-    canEdit: boolean;
+    canEdit: boolean | undefined
+    isEditing: boolean
+    onToggleEdit: () => void;
 }
 
 const ProfileHeader: React.FC<ProfileHeaderProps> = ({

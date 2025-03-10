@@ -4,8 +4,10 @@ import { Post, PostType } from '@/types';
 import '../../styles/components/profile/posts.css';
 
 interface PostsProps {
+    // Uh? Is there the possibility to edit the posts?
     posts: Post[];
-    isEditable: boolean;
+    teacherId: string;
+    isEditable: boolean | undefined;
 }
 
 const Posts: React.FC<PostsProps> = ({ posts, isEditable }) => {

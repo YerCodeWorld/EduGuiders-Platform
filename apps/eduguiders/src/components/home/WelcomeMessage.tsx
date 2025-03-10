@@ -6,6 +6,9 @@ import '../../styles/home/welcomeMessage.css';
 const WelcomeMessage = () => {
     const { user, isAuthenticated } = useAuth();
 
+    console.log('The user that has logged in is: ', user);
+    console.log('His role is: ', user?.role);
+
     if (!isAuthenticated || !user) return null;
 
     // Determine user's role to show relevant information

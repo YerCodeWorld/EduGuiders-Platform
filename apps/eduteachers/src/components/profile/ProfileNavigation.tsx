@@ -1,13 +1,12 @@
 // src/components/profile/ProfileNavigation.tsx
 import React from 'react';
 import '../../styles/components/profile/profileNavigation.css';
-
-type SectionType = 'availability' | 'bio' | 'cv' | 'contact' | 'teachingStyle' | 'personalRules' ;
+import {ProfileSectionType} from "@/types";
 
 interface ProfileNavigationProps {
-    activeSection: SectionType;
-    onSectionChange: (section: SectionType) => void;
-    canEdit: boolean;
+    activeSection: ProfileSectionType;
+    onSectionChange: (section: ProfileSectionType) => void;
+    canEdit: boolean | undefined;
     isEditing: boolean;
     onToggleEdit: () => void;
 }

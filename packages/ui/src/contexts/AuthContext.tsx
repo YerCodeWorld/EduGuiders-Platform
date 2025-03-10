@@ -84,7 +84,7 @@ const MOCK_USERS = [
         avatar: '/avatars/teacher2.jpg'
     },
     {
-        id: '4',
+        id: 'teacher1',
         name: 'Yahir Beras',
         email: 'yahir.beras@example.com',
         password: 'password',
@@ -166,6 +166,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             // Update useState
             setUser(userWithoutPassword as User);
             // Storing. Stringify() is the way localstorage stores its data?
+
+            console.log('The user with no password is: ', userWithoutPassword);
             localStorage.setItem('user', JSON.stringify(userWithoutPassword));
             return true;
         }
