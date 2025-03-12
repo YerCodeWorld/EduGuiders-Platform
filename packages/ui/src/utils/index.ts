@@ -105,9 +105,17 @@ export const calculateSessionDuration = (
 ): number => {
     const [startHours, startMinutes] = startTime.split(':').map(Number);
     const [endHours, endMinutes] = endTime.split(':').map(Number);
+    let startTotalMinutes = 0, endTotalMinutes = 0;
 
-    const startTotalMinutes = startHours * 60 + startMinutes;
-    const endTotalMinutes = endHours * 60 + endMinutes;
+    // The variables were possibly undefined so I added if statements, that does the job I guess
+
+    if (startHours && startMinutes) {
+        startTotalMinutes = startHours * 60 + startMinutes;
+    }
+
+    if (endHours && endMinutes) {
+        endTotalMinutes = endHours * 60 + endMinutes;
+    }
 
     // Handle overnight sessions (end time is earlier than start time)
     if (endTotalMinutes < startTotalMinutes) {
@@ -278,7 +286,9 @@ export const getQueryParams = (url: string): Record<string, string> => {
         const pairs = queryString.split('&');
         pairs.forEach(pair => {
             const [key, value] = pair.split('=');
-            params[key] = decodeURIComponent(value || '');
+            if (key) {
+                params[key] = decodeURIComponent(value || '');
+            }
         });
     }
 

@@ -20,7 +20,6 @@ export const EduTeachersRoutes = () => {
         "Why are some people so intelligent?"
     ]
 
-
     return (
         <Routes>
             {/* Routes content */}

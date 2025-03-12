@@ -1,13 +1,13 @@
 // src/components/layout/MainLayout.tsx
 import { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import Header from './Header';
-import Footer from './Footer';
-import { useAuth } from '../../contexts/AuthContext';
+import Header  from '../layout/Header';
+import Footer from '../layout/Footer';
+// import { useAuth } from '../../contexts/AuthContext';
 import '../../styles/layout/mainLayout.css';
 
 const MainLayout = () => {
-    const { isAuthenticated } = useAuth();
+    // const { isAuthenticated } = useAuth();
     const location = useLocation();
 
     // Scroll to top when route changes
@@ -18,7 +18,8 @@ const MainLayout = () => {
     return (
         <div className="site-wrapper">
             <Header />
-            <main className="main-content">
+            {/*Lol just by keeping the real name there's going to be some random padding*/}
+            <main className="main-cdontent">
                 <Outlet />
             </main>
             <Footer />

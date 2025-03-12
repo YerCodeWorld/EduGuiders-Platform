@@ -23,7 +23,7 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
     const [title, setTitle] = useState<string>('');
     const [snippet, setSnippet] = useState<string>('');
     const [content, setContent] = useState<string>('');
-    const [type, setType] = useState<'article' | 'video'>('article');
+    const [type, setType] = useState<'EduArticle' | 'EduVideo'>('EduArticle');
     const [imageUrl, setImageUrl] = useState<string>('');
     const [link, setLink] = useState<string>('');
     const [validationErrors, setValidationErrors] = useState<string[]>([]);
@@ -35,7 +35,7 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
             setTitle(post.title || '');
             setSnippet(post.snippet || '');
             setContent(post.content || '');
-            setType(post.type || 'article');
+            setType(post.type || 'EduArticle');
             setImageUrl(post.image || '');
             setLink(post.link || '');
         } else {
@@ -43,7 +43,7 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
             setTitle('');
             setSnippet('');
             setContent('');
-            setType('article');
+            setType('EduArticle');
             setImageUrl('/api/placeholder/400/250');
             setLink('');
         }
@@ -61,11 +61,11 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
             errors.push('Snippet/summary is required');
         }
 
-        if (type === 'article' && !content.trim()) {
+        if (type === 'EduArticle' && !content.trim()) {
             errors.push('Content is required for articles');
         }
 
-        if (type === 'video' && !link.trim()) {
+        if (type === 'EduVideo' && !link.trim()) {
             errors.push('Link is required for videos');
         }
 
@@ -157,7 +157,7 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
                     <select
                         id="type"
                         value={type}
-                        onChange={(e) => setType(e.target.value as 'article' | 'video')}
+                        onChange={(e) => setType(e.target.value as 'EduArticle' | 'EduVideo')}
                     >
                         <option value="article">Article</option>
                         <option value="video">Video</option>
@@ -176,7 +176,7 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
                     />
                 </div>
 
-                {type === 'article' && (
+                {type === 'EduArticle' && (
                     <div className="form-group">
                         <label htmlFor="content">Article Content</label>
                         <textarea
@@ -190,7 +190,7 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
                     </div>
                 )}
 
-                {type === 'video' && (
+                {type === 'EduVideo' && (
                     <div className="form-group">
                         <label htmlFor="link">Video Link</label>
                         <input

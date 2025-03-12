@@ -63,7 +63,8 @@ export interface ContactInfo {
     };
 }
 
-export type PostType = 'video' | 'article';
+//  | 'EduGame' | 'EduCourse' | 'EduCompetition'
+export type PostType = 'EduVideo' | 'EduArticle';
 
 export interface Post {
     id: string;
@@ -123,7 +124,6 @@ export interface Teacher {
     };
     teachingStyle?: TeachingStyle;
     personalRules?: PersonalRules;
-    // headerinfo ???
 }
 
 export interface Booking {

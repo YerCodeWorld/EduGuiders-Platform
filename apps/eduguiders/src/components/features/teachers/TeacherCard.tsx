@@ -1,7 +1,8 @@
 // src/components/features/teachers/TeacherCard.tsx
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth, UserRole } from '../../../../../../packages/ui/src/contexts/AuthContext';
+// Did we need User.Role in here?
+import { useAuth } from '../../../../../../packages/ui/src/contexts/AuthContext';
 import { getInitials } from '../../../methods.ts';
 import '../../../styles/features/teachers/teacherCard.css';
 
@@ -33,9 +34,10 @@ interface TeacherCardProps {
     featured?: boolean;
 }
 
-const TeacherCard = ({ teacher, featured = false }: TeacherCardProps) => {
+const TeacherCard = ({ teacher }: TeacherCardProps) => {
     const [isHovered, setIsHovered] = useState(false);
-    const { isAuthenticated, user } = useAuth();
+    // Again, did we need the user?
+    const { isAuthenticated } = useAuth();
 
     // Generate star rating display
     const renderStars = (rating: number) => {

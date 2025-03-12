@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@repo/ui/contexts/AuthContext';
-import { useTeachers } from '../contexts';
+import { useTeachers } from '../../contexts';
 // import { useNotify } from '../../../packages/ui/src/contexts/NotificationContext';
 import { formatDate, formatTime } from "@repo/ui/exports.ts";
 import { ROUTES } from "@repo/ui/routes/index.ts";
@@ -153,7 +153,7 @@ const SessionPrep = () => {
         if (sessionId) {
             fetchSessionData();
         }
-    }, [sessionId, user, teachers);  // Notify as well
+    }, [sessionId, user, teachers]);
 
     // Update document title
     useEffect(() => {

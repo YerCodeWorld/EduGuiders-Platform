@@ -1,6 +1,8 @@
 // src/components/profile/ProfileHeader.tsx
 import React, {useState, useEffect, useCallback} from 'react';
 import { useTeachers } from '../../contexts';
+import background from '../../../../../packages/ui/src/images/background.jpg';
+import photo from '../../../../../packages/ui/src/images/photo.jpeg';
 import '../../styles/components/profile/profileHeader.css';
 
 interface ProfileHeaderProps {
@@ -118,9 +120,12 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
 
     return (
         <header className="profile-header">
+            {/* Will keep this here:
+             style={{ backgroundImage: `url(${isEditing ? editedLandscapePic : landscapePicture})` }}
+             */}
             <div
                 className="landscape-picture"
-                style={{ backgroundImage: `url(${isEditing ? editedLandscapePic : landscapePicture})` }}
+                style={{ backgroundImage: `url(${isEditing ? editedLandscapePic : background})` }}
             >
                 {isEditing && (
                     <button
@@ -145,7 +150,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
             <div className="profile-personal">
                 <div
                     className="profile-picture"
-                    style={{ backgroundImage: `url(${isEditing ? editedProfilePic : profilePicture})` }}
+                    style={{ backgroundImage: `url(${isEditing ? editedProfilePic : photo})` }}
                 >
                     {isEditing && (
                         <button

@@ -1,5 +1,5 @@
 // src/services/api.ts
-import { UserRole } from '../contexts/AuthContext';
+import { UserRole } from '../../../../packages/ui/src/contexts/AuthContext';
 
 // Base API configuration
 const API_URL = import.meta.env.VITE_API_URL || 'https://api.eduguiders.com/v1';
@@ -123,6 +123,7 @@ export const mockApi = {
 
     // Mock data
     teachers: [
+
         // Teacher data would be here (same as in TeacherList component)
     ],
 

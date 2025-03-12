@@ -1,5 +1,4 @@
 // packages/ui/src/components/common/NotFound.tsx
-import React from 'react';
 import { Link } from 'react-router-dom';
 import '../../styles/common/notFound.css';
 
@@ -13,7 +12,7 @@ const NotFound= () => {
             <div className="not-found-content">
                 <div className="not-found-code">404</div>
                 <h1 className="not-found-title">Page Not Found</h1>
-                <p className="not-found-message">We're sorry, the page you requested could not be found.</p>
+                <p className="not-found-message">We are sorry, the page you requested could not be found.</p>
 
                 <div className="not-found-actions">
                     <Link to='/' className="not-found-button">

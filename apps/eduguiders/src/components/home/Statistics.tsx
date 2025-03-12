@@ -18,6 +18,7 @@ const Statistics = () => {
     const sectionRef = useRef<HTMLElement>(null);
 
     // Statistics data
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const stats: StatItem[] = [
         {
             id: 'teachers',
@@ -76,9 +77,11 @@ const Statistics = () => {
     useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => {
-                // @ts-ignore
-                if (entries[0].isIntersecting && !animationStarted) {
-                    setAnimationStarted(true);
+
+                if (entries[0]) {
+                    if (entries[0].isIntersecting && !animationStarted) {
+                        setAnimationStarted(true);
+                    }
                 }
             },
             {

@@ -159,14 +159,14 @@ const Posts: React.FC<PostsProps> = ({ posts, isEditable, teacherId }) => {
                             All
                         </button>
                         <button
-                            className={`filter-btn ${activeFilter === 'video' ? 'active' : ''}`}
-                            onClick={() => handleFilterChange('video')}
+                            className={`filter-btn ${activeFilter === 'EduVideo' ? 'active' : ''}`}
+                            onClick={() => handleFilterChange('EduVideo')}
                         >
                             Videos
                         </button>
                         <button
-                            className={`filter-btn ${activeFilter === 'article' ? 'active' : ''}`}
-                            onClick={() => handleFilterChange('article')}
+                            className={`filter-btn ${activeFilter === 'EduArticle' ? 'active' : ''}`}
+                            onClick={() => handleFilterChange('EduArticle')}
                         >
                             Articles
                         </button>
@@ -182,7 +182,7 @@ const Posts: React.FC<PostsProps> = ({ posts, isEditable, teacherId }) => {
                                 <div className="post-image">
                                     <img src={post.image} alt={post.title} />
                                     <div className="post-type">
-                                        <i className={`fas fa-${post.type === 'video' ? 'play-circle' : 'file-alt'}`}></i>
+                                        <i className={`fas fa-${post.type === 'EduVideo' ? 'play-circle' : 'file-alt'}`}></i>
                                     </div>
 
                                     {isEditable && (
@@ -240,7 +240,7 @@ const Posts: React.FC<PostsProps> = ({ posts, isEditable, teacherId }) => {
                                         target="_blank"
                                         rel="noopener noreferrer"
                                     >
-                                        {post.type === 'video' ? 'Watch Video' : 'Read Article'} <i className="fas fa-arrow-right"></i>
+                                        {post.type === 'EduVideo' ? 'Watch Video' : 'Read Article'} <i className="fas fa-arrow-right"></i>
                                     </a>
                                 </div>
                             </article>
