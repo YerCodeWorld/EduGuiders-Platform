@@ -1,16 +1,37 @@
 // src/components/profile/Availability.tsx
-import React, { useState, useEffect } from 'react';
-import { WeeklySchedule, TimeSlot, BookingRequest } from '@/types';
+import React, { useState, useEffect, useCallback } from 'react';
+import { WeeklySchedule, TimeSlot, BookingRequest, TimeSlotStatus } from '@/types';
 import { useAuth, UserRole } from '@repo/ui/contexts/AuthContext';
 import { useTeachers } from '../../contexts';
-import { formatTime } from '../../../../../packages/ui/src/methods.ts';
+import { formatTime } from '../../../../../packages/ui/src/methods';
 import '../../styles/components/profile/availability.css';
 
 interface AvailabilityProps {
     teacherId: string;
     availability: WeeklySchedule[];
-    isEditable: boolean | undefined;
+    isEditable: boolean;
 }
+
+// Available time slots for adding new slots
+const AVAILABLE_TIMES = [
+    '08:00', '09:00', '10:00', '11:00', '12:00',
+    '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00'
+];
+
+// Day mapping for display
+const DAY_NAMES: Record<string, string> = {
+    mon: 'Monday',
+    tue: 'Tuesday',
+    wed: 'Wednesday',
+    thu: 'Thursday',
+    fri: 'Friday',
+    sat: 'Saturday',
+    sun: 'Sunday'
+};
+
+// Day types
+type DayType = 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun';
+const ALL_DAYS: DayType[] = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
 
 const Availability: React.FC<AvailabilityProps> = ({
                                                        teacherId,
@@ -21,21 +42,44 @@ const Availability: React.FC<AvailabilityProps> = ({
     const { updateTimeSlot, createBooking } = useTeachers();
 
     // State for the current week being viewed
-    const [currentWeekIndex, setCurrentWeekIndex] = useState(0);
-    const currentWeek = availability[currentWeekIndex] || { weekStartDate: '', slots: [] };
+    const [currentWeekIndex, setCurrentWeekIndex] = useState<number>(0);
+    const [currentWeek, setCurrentWeek] = useState<WeeklySchedule | null>(null);
 
-    // State for the booking form
-    const [showBookingForm, setShowBookingForm] = useState(false);
+    // Editing state
+    const [isEditMode, setIsEditMode] = useState<boolean>(false);
+    const [editedSlots, setEditedSlots] = useState<TimeSlot[]>([]);
+    const [selectedDay, setSelectedDay] = useState<DayType | null>(null);
+    const [selectedTime, setSelectedTime] = useState<string>('');
+    const [selectedStatus, setSelectedStatus] = useState<TimeSlotStatus>('available');
+
+    // Booking form state
+    const [showBookingForm, setShowBookingForm] = useState<boolean>(false);
     const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null);
+    const [fullName, setFullName] = useState<string>(user?.name || '');
+    const [email, setEmail] = useState<string>(user?.email || '');
+    const [topic, setTopic] = useState<string>('');
+    const [notes, setNotes] = useState<string>('');
 
-    // Form state
-    const [fullName, setFullName] = useState(user?.name || '');
-    const [email, setEmail] = useState(user?.email || '');
-    const [topic, setTopic] = useState('');
-    const [notes, setNotes] = useState('');
+    // UI state
+    const [showSuccessMessage, setShowSuccessMessage] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
+    const [isProcessing, setIsProcessing] = useState<boolean>(false);
+    const [editSuccess, setEditSuccess] = useState<boolean>(false);
 
-    // Booking success message
-    const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+    // Update current week when index or availability changes
+    useEffect(() => {
+        if (availability && availability.length > 0) {
+            const week = availability[currentWeekIndex] || null;
+            setCurrentWeek(week);
+
+            if (week && isEditMode) {
+                // Reset edited slots when week changes
+                setEditedSlots([...week.slots]);
+            }
+        } else {
+            setCurrentWeek(null);
+        }
+    }, [availability, currentWeekIndex, isEditMode]);
 
     // Update form values when user changes
     useEffect(() => {
@@ -46,7 +90,7 @@ const Availability: React.FC<AvailabilityProps> = ({
     }, [user]);
 
     // Format the display date for the week
-    const formatWeekDisplay = (dateString: string) => {
+    const formatWeekDisplay = useCallback((dateString: string): string => {
         if (!dateString) return 'No availability';
 
         const startDate = new Date(dateString);
@@ -64,7 +108,7 @@ const Availability: React.FC<AvailabilityProps> = ({
         } else {
             return `${startMonth} ${startDay} - ${endMonth} ${endDay}, ${startDate.getFullYear()}`;
         }
-    };
+    }, []);
 
     // Handle navigation between weeks
     const goToPreviousWeek = () => {
@@ -79,23 +123,152 @@ const Availability: React.FC<AvailabilityProps> = ({
         }
     };
 
-    // Handle slot click for booking
-    const handleSlotClick = (slot: TimeSlot) => {
-        if (slot.status === 'available' && hasRole(UserRole.STUDENT)) {
-            setSelectedSlot(slot);
-            setShowBookingForm(true);
+    // Handle entering edit mode
+    const handleEnterEditMode = () => {
+        if (currentWeek) {
+            setEditedSlots([...currentWeek.slots]);
+            setIsEditMode(true);
+            setSelectedDay(null);
+            setSelectedTime('');
+            setEditSuccess(false);
+            setError(null);
         }
     };
 
-    // Handle slot status change (for teachers)
-    const handleSlotStatusChange = (slot: TimeSlot, newStatus: 'available' | 'unavailable') => {
-        if (isEditable) {
-            updateTimeSlot(
-                teacherId,
-                currentWeek.weekStartDate,
-                slot.id,
-                { status: newStatus }
-            );
+    // Handle exiting edit mode without saving
+    const handleCancelEdit = () => {
+        setIsEditMode(false);
+        setEditedSlots([]);
+        setSelectedDay(null);
+        setSelectedTime('');
+        setError(null);
+    };
+
+    // Get all unique times for the current slots
+    const getAllTimes = useCallback(() => {
+        if (!editedSlots || editedSlots.length === 0) return AVAILABLE_TIMES;
+
+        const times = new Set<string>(AVAILABLE_TIMES);
+        editedSlots.forEach(slot => times.add(slot.time));
+
+        return Array.from(times).sort((a, b) => a.localeCompare(b));
+    }, [editedSlots]);
+
+    // Prepare slots by day
+    const prepareSlotsByDay = useCallback((slots: TimeSlot[] = []) => {
+        const slotsByDay: Record<string, TimeSlot[]> = {};
+
+        ALL_DAYS.forEach(day => {
+            slotsByDay[day] = [];
+        });
+
+        slots.forEach(slot => {
+            if (!slotsByDay[slot.day]) {
+                slotsByDay[slot.day] = [];
+            }
+            slotsByDay[slot.day].push(slot);
+        });
+
+        // Sort slots by time in each day
+        Object.keys(slotsByDay).forEach(day => {
+            slotsByDay[day].sort((a, b) => {
+                return a.time.localeCompare(b.time);
+            });
+        });
+
+        return slotsByDay;
+    }, []);
+
+    // Get slot for a specific day and time
+    const getSlotForDayAndTime = useCallback((slots: TimeSlot[], day: string, time: string): TimeSlot | undefined => {
+        return slots.find(slot => slot.day === day && slot.time === time);
+    }, []);
+
+    // Handle slot click for booking
+    const handleSlotClick = (slot: TimeSlot) => {
+        if (isEditMode) {
+            // In edit mode, clicking changes the slot status
+            const updatedSlots = editedSlots.map(s => {
+                if (s.id === slot.id) {
+                    const newStatus: TimeSlotStatus =
+                        s.status === 'available' ? 'unavailable' :
+                            s.status === 'unavailable' ? 'available' :
+                                s.status; // Keep booked status unchanged
+
+                    return { ...s, status: newStatus };
+                }
+                return s;
+            });
+            setEditedSlots(updatedSlots);
+        } else if (slot.status === 'available' && hasRole(UserRole.STUDENT)) {
+            // In view mode, students can book available slots
+            setSelectedSlot(slot);
+            setShowBookingForm(true);
+            setError(null);
+        }
+    };
+
+    // Handle adding a new time slot
+    const handleAddTimeSlot = () => {
+        if (!selectedDay || !selectedTime || !currentWeek) return;
+
+        // Check if slot already exists
+        const existingSlot = getSlotForDayAndTime(editedSlots, selectedDay, selectedTime);
+        if (existingSlot) {
+            setError('This time slot already exists. Please edit it or choose a different time.');
+            return;
+        }
+
+        // Create new slot
+        const newSlot: TimeSlot = {
+            id: `${teacherId}-${currentWeek.weekStartDate}-${selectedDay}-${selectedTime}`,
+            day: selectedDay,
+            time: selectedTime,
+            status: selectedStatus
+        };
+
+        setEditedSlots([...editedSlots, newSlot]);
+        setSelectedDay(null);
+        setSelectedTime('');
+        setError(null);
+    };
+
+    // Handle removing a time slot
+    const handleRemoveTimeSlot = (slot: TimeSlot) => {
+        // Only allow removing slots that aren't booked
+        if (slot.status === 'booked') {
+            setError('Cannot remove booked slots. Please contact support to resolve booking conflicts.');
+            return;
+        }
+
+        setEditedSlots(editedSlots.filter(s => s.id !== slot.id));
+    };
+
+    // Handle saving availability changes
+    const handleSaveAvailability = async () => {
+        if (!currentWeek) return;
+
+        setIsProcessing(true);
+        setError(null);
+
+        try {
+            // In a real application, you would have an API endpoint to update the entire week's schedule
+            // For now, we'll simulate success
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            // Update successful
+            setIsEditMode(false);
+            setEditSuccess(true);
+
+            // Hide success message after a delay
+            setTimeout(() => {
+                setEditSuccess(false);
+            }, 5000);
+        } catch (err) {
+            console.error('Error saving availability:', err);
+            setError('Failed to save availability changes. Please try again.');
+        } finally {
+            setIsProcessing(false);
         }
     };
 
@@ -103,132 +276,226 @@ const Availability: React.FC<AvailabilityProps> = ({
     const handleBookingSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!selectedSlot || !user?.id) return;
+        if (!selectedSlot || !user?.id || !topic.trim()) {
+            setError('Please fill in all required fields');
+            return;
+        }
 
-        // Create booking request
-        const bookingRequest: BookingRequest = {
-            teacherId,
-            studentId: user.id,
-            slotId: selectedSlot.id,
-            date: getDateFromSlot(selectedSlot),
-            time: selectedSlot.time,
-            topic,
-            notes
-        };
+        setIsProcessing(true);
+        setError(null);
 
-        const success = await createBooking(bookingRequest);
+        try {
+            // Create booking request
+            const bookingRequest: BookingRequest = {
+                teacherId,
+                studentId: user.id,
+                slotId: selectedSlot.id,
+                date: getDateFromSlot(selectedSlot),
+                time: selectedSlot.time,
+                topic,
+                notes: notes.trim() || undefined
+            };
 
-        if (success) {
-            // Reset form and show success message
-            setShowBookingForm(false);
-            setSelectedSlot(null);
-            setTopic('');
-            setNotes('');
-            setShowSuccessMessage(true);
+            const success = await createBooking(bookingRequest);
 
-            // Hide success message after 5 seconds
-            setTimeout(() => {
-                setShowSuccessMessage(false);
-            }, 5000);
+            if (success) {
+                // Reset form and show success message
+                setShowBookingForm(false);
+                setSelectedSlot(null);
+                setTopic('');
+                setNotes('');
+                setShowSuccessMessage(true);
+
+                // Hide success message after 5 seconds
+                setTimeout(() => {
+                    setShowSuccessMessage(false);
+                }, 5000);
+            } else {
+                setError('Failed to create booking. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error creating booking:', error);
+            setError('An error occurred while creating the booking.');
+        } finally {
+            setIsProcessing(false);
         }
     };
 
     // Helper to get the full date from a slot
     const getDateFromSlot = (slot: TimeSlot): string => {
+        if (!currentWeek) return '';
+
         const weekStart = new Date(currentWeek.weekStartDate);
-        const dayIndex = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'].indexOf(slot.day);
+        const dayIndex = ALL_DAYS.indexOf(slot.day as DayType);
         const date = new Date(weekStart);
         date.setDate(weekStart.getDate() + dayIndex);
-        // @ts-ignore
         return date.toISOString().split('T')[0]; // Format as YYYY-MM-DD
     };
 
     // Format slot info for display
     const formatSlotInfo = (slot: TimeSlot): string => {
-        const dayNames = {
-            mon: 'Monday',
-            tue: 'Tuesday',
-            wed: 'Wednesday',
-            thu: 'Thursday',
-            fri: 'Friday',
-            sat: 'Saturday',
-            sun: 'Sunday'
-        };
-
         const date = getDateFromSlot(slot);
-        return `${dayNames[slot.day]}, ${new Date(date).toLocaleDateString()} at ${formatTime(slot.time)}`;
+        return `${DAY_NAMES[slot.day]}, ${new Date(date).toLocaleDateString()} at ${formatTime(slot.time)}`;
     };
 
-    // Group slots by day
-    const slotsByDay: Record<string, TimeSlot[]> = {};
-    currentWeek.slots.forEach(slot => {
-        if (!slotsByDay[slot.day]) {
-            slotsByDay[slot.day] = [];
-        }
-        // @ts-ignore
-        slotsByDay[slot.day].push(slot);
-    });
+    // If no availability data, show empty state
+    if (!currentWeek) {
+        return (
+            <section id="availability" className="profile-section">
+                <h2>Availability</h2>
+                <p className="section-intro">
+                    No availability information has been added yet.
+                </p>
+                {isEditable && (
+                    <div className="empty-availability">
+                        <button className="btn-primary" onClick={handleEnterEditMode}>
+                            <i className="fas fa-plus"></i> Add Availability
+                        </button>
+                    </div>
+                )}
+            </section>
+        );
+    }
 
-    // Sort slots by time
-    Object.keys(slotsByDay).forEach(day => {
-        // @ts-ignore
-        slotsByDay[day].sort((a, b) => {
-            return a.time.localeCompare(b.time);
-        });
-    });
-
-    // Get all unique times across all days
-    const allTimes = Array.from(new Set(currentWeek.slots.map(slot => slot.time)))
-        .sort((a, b) => a.localeCompare(b));
-
-    // Function to get slot for a specific day and time
-    const getSlotForDayAndTime = (day: string, time: string): TimeSlot | undefined => {
-        return slotsByDay[day]?.find(slot => slot.time === time);
-    };
-
-    // Order of days for display
-    const dayOrder = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+    // Prepare data for display
+    const displaySlots = isEditMode ? editedSlots : currentWeek.slots;
+    const slotsByDay = prepareSlotsByDay(displaySlots);
+    const allTimes = getAllTimes();
 
     return (
         <section id="availability" className="profile-section">
-            <h2>Availability</h2>
+            <div className="availability-section-header">
+                <h2>Availability</h2>
+                {isEditable && !isEditMode && (
+                    <button
+                        className="edit-btn"
+                        onClick={handleEnterEditMode}
+                        aria-label="Edit availability"
+                    >
+                        <i className="fas fa-edit"></i> Edit Availability
+                    </button>
+                )}
+            </div>
+
             <p className="section-intro">
-                {hasRole(UserRole.STUDENT)
-                    ? "Select your preferred day and time slot to schedule a session."
-                    : "Manage your availability and view upcoming bookings."
+                {isEditMode ?
+                    "Update your availability by clicking on time slots to toggle their status. You can also add new time slots." :
+                    hasRole(UserRole.STUDENT) ?
+                        "Select your preferred day and time slot to schedule a session." :
+                        "View your availability schedule and upcoming bookings."
                 }
             </p>
+
+            {error && (
+                <div className="error-message">
+                    {error}
+                </div>
+            )}
+
+            {editSuccess && (
+                <div className="success-message">
+                    <div className="success-icon"><i className="fas fa-check-circle"></i></div>
+                    <h3>Availability Updated</h3>
+                    <p>Your availability schedule has been successfully updated.</p>
+                </div>
+            )}
 
             <div className="calendar-container">
                 <div className="week-selector">
                     <button
-                        id="prev-week"
                         className="week-nav"
                         onClick={goToPreviousWeek}
-                        disabled={currentWeekIndex === 0}
+                        disabled={currentWeekIndex === 0 || isProcessing || isEditMode}
+                        aria-label="Previous week"
                     >
                         <i className="fas fa-chevron-left"></i>
                     </button>
-                    <span id="week-display">{formatWeekDisplay(currentWeek.weekStartDate)}</span>
+                    <span className="week-display">{formatWeekDisplay(currentWeek.weekStartDate)}</span>
                     <button
-                        id="next-week"
                         className="week-nav"
                         onClick={goToNextWeek}
-                        disabled={currentWeekIndex === availability.length - 1}
+                        disabled={currentWeekIndex === availability.length - 1 || isProcessing || isEditMode}
+                        aria-label="Next week"
                     >
                         <i className="fas fa-chevron-right"></i>
                     </button>
                 </div>
 
+                {/* Editing controls */}
+                {isEditMode && (
+                    <div className="edit-controls">
+                        <div className="add-slot-form">
+                            <h3>Add Time Slot</h3>
+                            <div className="add-slot-inputs">
+                                <div className="form-group">
+                                    <label htmlFor="day-select">Day</label>
+                                    <select
+                                        id="day-select"
+                                        value={selectedDay || ''}
+                                        onChange={(e) => setSelectedDay(e.target.value as DayType)}
+                                        disabled={isProcessing}
+                                    >
+                                        <option value="">Select Day</option>
+                                        {ALL_DAYS.map(day => (
+                                            <option key={day} value={day}>{DAY_NAMES[day]}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div className="form-group">
+                                    <label htmlFor="time-select">Time</label>
+                                    <select
+                                        id="time-select"
+                                        value={selectedTime}
+                                        onChange={(e) => setSelectedTime(e.target.value)}
+                                        disabled={isProcessing}
+                                    >
+                                        <option value="">Select Time</option>
+                                        {AVAILABLE_TIMES.map(time => (
+                                            <option key={time} value={time}>{formatTime(time)}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div className="form-group">
+                                    <label htmlFor="status-select">Status</label>
+                                    <select
+                                        id="status-select"
+                                        value={selectedStatus}
+                                        onChange={(e) => setSelectedStatus(e.target.value as TimeSlotStatus)}
+                                        disabled={isProcessing}
+                                    >
+                                        <option value="available">Available</option>
+                                        <option value="unavailable">Unavailable</option>
+                                    </select>
+                                </div>
+
+                                <button
+                                    className="add-slot-btn"
+                                    onClick={handleAddTimeSlot}
+                                    disabled={!selectedDay || !selectedTime || isProcessing}
+                                >
+                                    <i className="fas fa-plus"></i> Add
+                                </button>
+                            </div>
+                        </div>
+
+                        <p className="edit-instructions">
+                            <i className="fas fa-info-circle"></i> Click on slots to toggle between available and unavailable.
+                            Booked slots cannot be modified.
+                        </p>
+                    </div>
+                )}
+
                 <div className="timetable">
                     <div className="time-headers">
                         <div className="day-header"></div> {/* Empty corner cell */}
-                        {dayOrder.map(day => (
+                        {ALL_DAYS.map(day => (
                             <div
                                 key={day}
                                 className={`day-header ${day === 'sat' || day === 'sun' ? 'weekend' : ''}`}
                             >
-                                {day.charAt(0).toUpperCase() + day.slice(1)}
+                                {DAY_NAMES[day].substring(0, 3)}
                             </div>
                         ))}
                     </div>
@@ -244,58 +511,47 @@ const Availability: React.FC<AvailabilityProps> = ({
                         </div>
 
                         {/* Day columns */}
-                        {dayOrder.map(day => (
+                        {ALL_DAYS.map(day => (
                             <div
                                 key={day}
                                 className={`day-column ${day === 'sat' || day === 'sun' ? 'weekend' : ''}`}
                             >
                                 {allTimes.map(time => {
-                                    const slot = getSlotForDayAndTime(day, time);
+                                    const slot = getSlotForDayAndTime(displaySlots, day, time);
+                                    const slotExists = !!slot;
+
                                     return (
                                         <div
                                             key={`${day}-${time}`}
-                                            className={`slot ${slot?.status || 'unavailable'}`}
+                                            className={`slot ${slotExists ? slot.status : 'empty'} ${isEditMode ? 'editable' : ''}`}
                                             onClick={() => slot && handleSlotClick(slot)}
                                             title={
-                                                slot?.status === 'booked'
-                                                    ? `Booked by ${slot.studentName || 'a student'}: ${slot.topic || 'No topic specified'}`
-                                                    : slot?.status === 'available'
-                                                        ? 'Available - Click to book'
-                                                        : 'Unavailable'
+                                                !slotExists ? 'No time slot' :
+                                                    slot.status === 'booked'
+                                                        ? `Booked by ${slot.studentName || 'a student'}: ${slot.topic || 'No topic specified'}`
+                                                        : slot.status === 'available'
+                                                            ? isEditMode ? 'Click to make unavailable' : 'Available - Click to book'
+                                                            : isEditMode ? 'Click to make available' : 'Unavailable'
                                             }
                                         >
-                                            {isEditable && slot && (
-                                                <div className="slot-controls">
-                                                    {slot.status !== 'booked' && (
-                                                        <>
-                                                            <button
-                                                                className={`status-toggle available ${slot.status === 'available' ? 'active' : ''}`}
-                                                                onClick={(e) => {
-                                                                    e.stopPropagation();
-                                                                    handleSlotStatusChange(slot, 'available');
-                                                                }}
-                                                                title="Mark as available"
-                                                            >
-                                                                <i className="fas fa-check"></i>
-                                                            </button>
-                                                            <button
-                                                                className={`status-toggle unavailable ${slot.status === 'unavailable' ? 'active' : ''}`}
-                                                                onClick={(e) => {
-                                                                    e.stopPropagation();
-                                                                    handleSlotStatusChange(slot, 'unavailable');
-                                                                }}
-                                                                title="Mark as unavailable"
-                                                            >
-                                                                <i className="fas fa-times"></i>
-                                                            </button>
-                                                        </>
-                                                    )}
-                                                    {slot.status === 'booked' && (
-                                                        <div className="booked-info">
-                                                            <span className="booked-student">{slot.studentName}</span>
-                                                            <span className="booked-topic">{slot.topic}</span>
-                                                        </div>
-                                                    )}
+                                            {slotExists && isEditMode && slot.status !== 'booked' && (
+                                                <button
+                                                    className="remove-slot-btn"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleRemoveTimeSlot(slot);
+                                                    }}
+                                                    title="Remove time slot"
+                                                    aria-label="Remove time slot"
+                                                >
+                                                    <i className="fas fa-times"></i>
+                                                </button>
+                                            )}
+
+                                            {slotExists && slot.status === 'booked' && (
+                                                <div className="booked-info">
+                                                    <span className="booked-student">{slot.studentName || 'Student'}</span>
+                                                    {slot.topic && <span className="booked-topic">{slot.topic}</span>}
                                                 </div>
                                             )}
                                         </div>
@@ -319,15 +575,41 @@ const Availability: React.FC<AvailabilityProps> = ({
                         <div className="legend-color unavailable"></div>
                         <span>Unavailable</span>
                     </div>
+                    {isEditMode && (
+                        <div className="legend-item">
+                            <div className="legend-color empty"></div>
+                            <span>No Slot</span>
+                        </div>
+                    )}
                 </div>
+
+                {/* Edit mode action buttons */}
+                {isEditMode && (
+                    <div className="edit-actions">
+                        <button
+                            className="btn-secondary"
+                            onClick={handleCancelEdit}
+                            disabled={isProcessing}
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            className="btn-primary"
+                            onClick={handleSaveAvailability}
+                            disabled={isProcessing}
+                        >
+                            {isProcessing ? 'Saving...' : 'Save Availability'}
+                        </button>
+                    </div>
+                )}
 
                 {/* Booking Form */}
                 {showBookingForm && selectedSlot && (
-                    <div id="booking-form" className="booking-form">
+                    <div className="booking-form">
                         <h3>Book a Session</h3>
-                        <p id="selected-slot-info">{formatSlotInfo(selectedSlot)}</p>
+                        <p className="selected-slot-info">{formatSlotInfo(selectedSlot)}</p>
 
-                        <form id="book-session-form" onSubmit={handleBookingSubmit}>
+                        <form onSubmit={handleBookingSubmit}>
                             <div className="form-group">
                                 <label htmlFor="full-name">Full Name</label>
                                 <input
@@ -336,6 +618,7 @@ const Availability: React.FC<AvailabilityProps> = ({
                                     value={fullName}
                                     onChange={(e) => setFullName(e.target.value)}
                                     required
+                                    disabled={isProcessing}
                                 />
                             </div>
 
@@ -347,6 +630,7 @@ const Availability: React.FC<AvailabilityProps> = ({
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     required
+                                    disabled={isProcessing}
                                 />
                             </div>
 
@@ -357,13 +641,14 @@ const Availability: React.FC<AvailabilityProps> = ({
                                     value={topic}
                                     onChange={(e) => setTopic(e.target.value)}
                                     required
+                                    disabled={isProcessing}
                                 >
                                     <option value="">Select a topic</option>
-                                    <option value="algebra">Algebra</option>
-                                    <option value="calculus">Calculus</option>
-                                    <option value="statistics">Statistics</option>
-                                    <option value="geometry">Geometry</option>
-                                    <option value="other">Other</option>
+                                    <option value="Algebra">Algebra</option>
+                                    <option value="Calculus">Calculus</option>
+                                    <option value="Statistics">Statistics</option>
+                                    <option value="Geometry">Geometry</option>
+                                    <option value="Other">Other</option>
                                 </select>
                             </div>
 
@@ -374,22 +659,30 @@ const Availability: React.FC<AvailabilityProps> = ({
                                     value={notes}
                                     onChange={(e) => setNotes(e.target.value)}
                                     rows={3}
+                                    disabled={isProcessing}
                                 ></textarea>
                             </div>
 
                             <div className="form-actions">
                                 <button
                                     type="button"
-                                    id="cancel-booking"
                                     className="btn-secondary"
                                     onClick={() => {
                                         setShowBookingForm(false);
                                         setSelectedSlot(null);
+                                        setError(null);
                                     }}
+                                    disabled={isProcessing}
                                 >
                                     Cancel
                                 </button>
-                                <button type="submit" className="btn-primary">Book Session</button>
+                                <button
+                                    type="submit"
+                                    className="btn-primary"
+                                    disabled={isProcessing}
+                                >
+                                    {isProcessing ? 'Booking...' : 'Book Session'}
+                                </button>
                             </div>
                         </form>
                     </div>

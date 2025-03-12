@@ -8,6 +8,10 @@ import '../../styles/layout/header.css';
 import * as React from "react";
 import img from '../../images/full/blue.png';
 
+// I want to add a text next to the logo that indicates the section we are currently in
+// To do that I could either make this a functional component or utilize another strategy
+// to achieve it.
+
 const Header = () => {
     const [menuOpen, setMenuOpen] = useState(false);
     const { user, isAuthenticated } = useAuth();
@@ -28,6 +32,8 @@ const Header = () => {
                 <Link to="/" className="title logo-container">
                     <span className="visually-hidden">EduGuiders</span>
                 </Link>
+
+                {/*<h1>Home</h1>*/}
 
                 <nav className="main-nav">
                     <ul>
@@ -71,19 +77,5 @@ const Header = () => {
         </header>
     );
 };
-
-// Helper function to get dashboard link based on user role
-function getUserDashboardLink(role?: UserRole): string {
-    switch (role) {
-        case UserRole.ADMIN:
-            return '/admin';
-        case UserRole.TEACHER:
-            return '/teacher/dashboard';
-        case UserRole.STUDENT:
-            return '/student/dashboard';
-        default:
-            return '/';
-    }
-}
 
 export default Header;

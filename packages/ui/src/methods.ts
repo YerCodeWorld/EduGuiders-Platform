@@ -1,6 +1,13 @@
 // packages/ui/src/methods.ts
 // Common utility functions
 
+type cases = {
+    upper: string,
+    lower: string,
+    titleCase: string,
+    RandomCase: string
+}
+
 /**
  * Gets initials from a person's name (e.g., "John Doe" -> "JD")
  */
@@ -112,3 +119,18 @@ export const getRandomInt = (min: number, max: number): number => {
     return Math.floor(Math.random() * (max - min + 1 )) + min;
 };
 
+/*
+* Get some text to a different case
+
+export const changeCase = (setCase: string, text: string) {
+
+    const cases = {
+        lower: text.toUpperCase(),
+        upper: text.toLowerCase(),
+        titleCase: undefined,
+        randomCase: undefined
+    };
+
+    // return cases[setCase](text);
+}
+*/
