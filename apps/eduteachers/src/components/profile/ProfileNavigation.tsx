@@ -65,7 +65,7 @@ const ProfileNavigation: React.FC<ProfileNavigationProps> = ({
                             </>
                         ) : (
                             <>
-                                <i className="fas fa-edit" aria-hidden="true"></i> Edit {activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}
+                                <i className="fas fa-edit" aria-hidden="true"></i> Edit {activeSection.charAt(0).toUpperCase() + activeSection.slice(1).toUpperCase()}
                             </>
                         )}
                     </button>

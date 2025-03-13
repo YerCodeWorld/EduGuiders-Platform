@@ -24,6 +24,11 @@
     gap: 2rem;
 }
 
+.cv-edit-fields {
+    display: flex;
+    margin: 10px;
+}
+
 .cv-item:last-child {
     margin-bottom: 0;
 }

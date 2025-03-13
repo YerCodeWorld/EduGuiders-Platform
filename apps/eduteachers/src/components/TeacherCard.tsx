@@ -50,9 +50,11 @@ export const TeacherCard: React.FC<TeacherCardProps> = ({ teacher, featured = fa
             >
                 {/* Badges if any */}
                 <div className="teacher-badges">
+                    {/*This will be a nice addition later
                     {teacher.rating && teacher.rating >= 4.8 && (
                         <span className="badge top-rated">Top Rated</span>
                     )}
+                    */}
                     {featured && (
                         <span className="badge featured">Featured</span>
                     )}

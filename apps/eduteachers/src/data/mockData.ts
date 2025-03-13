@@ -1,6 +1,10 @@
 // src/data/mockData.ts
 // TimeSlot was imported but never used
 import { Teacher, Booking } from '@/types';
+import park from '../../../eduguiders/src/assets/images/park.jpg';
+import nature from '../../../eduguiders/src/assets/images/nature.jpg';
+import setup from '../../../eduguiders/src/assets/images/bannerBackground.png';
+import photo from '../../../../packages/ui/src/images/photo.jpeg';
 
 // Helper to create time slots for a day
 const createDaySlots = (day: 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun', baseId: string) => {
@@ -71,22 +75,22 @@ export const mockTeachers: Teacher[] = [
     {
         id: 'teacher1',
         name: 'Yahir Adolfo Beras',
-        title: 'Mathematics & Interactive Learning Expert',
-        profilePicture: 'https://example.com/profiles/yahir.jpg',
-        landscapePicture: '/api/placeholder/1600/400',
+        title: 'Musician, Programmer and English Teacher',
+        profilePicture: photo,
+        landscapePicture: setup,
         bio: {
             introduction: [
-                'Yahir Adolfo Beras is a passionate mathematics educator with over 10 years of experience in developing innovative teaching methodologies that make complex concepts accessible to students of all levels.',
-                'With a background in both pure mathematics and educational psychology, Yahir specializes in creating interactive learning environments that engage students through practical applications and real-world problem-solving scenarios.',
-                'His teaching philosophy centers around the belief that anyone can excel in mathematics given the right guidance and approach. This has led him to develop a unique teaching style that combines traditional mathematical rigor with modern, technology-enhanced learning techniques.',
-                'When not teaching, Yahir enjoys exploring mathematical concepts through art and music, and frequently contributes to educational journals on the intersection of technology and mathematical pedagogy.'
+                'Yahir Adolfo is a mesmerizing person. At the age of 17, with no clear skills to see, he started studying just for the fun of it. Little did he know where that would take him',
+                'With no background or any particular special studies behind him, he just started pressing some random keys on a piano. Then learning English on Duolingo, to creating his own platform.',
+                'Besides all these abilities, he works and is and amazing and proficient teacher loved by all of those who have had the oportunity to be alongside him, reporting to have gotten the motivation and knowledge to continue.',
+                'When not teaching or working on his programming projects, Yahir loves to play some chess, hang out with friends, go to the church, explore and last but not least, eat a lot.'
             ],
-            quote: '"Mathematics is not about numbers, equations, computations, or algorithms: it is about understanding." — William Paul Thurston',
+            quote: '"Behind all talent is a world of horror and slavery. Gold molded by the roughest earth to be the most brilliant" — Yahir Adolfo',
             expertiseAreas: [
-                { icon: 'square-root-alt', name: 'Advanced Algebra' },
-                { icon: 'calculator', name: 'Calculus' },
-                { icon: 'chart-line', name: 'Statistics' },
-                { icon: 'shapes', name: 'Geometry' }
+                { icon: 'fa fa-chalkboard-teacher', name: 'Teaching' },
+                { icon: 'fa fa-language', name: 'Language Learning' },
+                { icon: 'fa fa-code', name: 'Programming' },
+                { icon: 'fa fa-music', name: 'Piano' }
             ]
         },
         cv: {
@@ -189,7 +193,7 @@ export const mockTeachers: Teacher[] = [
         name: 'Sofia Rodriguez',
         title: 'Language Arts & Literature Specialist',
         profilePicture: '/api/placeholder/160/160',
-        landscapePicture: '/api/placeholder/1600/400',
+        landscapePicture: park,
         bio: {
             introduction: [
                 'Sofia Rodriguez is a dedicated language arts educator with a passion for literature and creative writing. With 8 years of teaching experience, she has developed methods that inspire students to explore the power of language and storytelling.',
@@ -304,7 +308,7 @@ export const mockTeachers: Teacher[] = [
         name: 'David Chen',
         title: 'Physics & Engineering Educator',
         profilePicture: '/api/placeholder/160/160',
-        landscapePicture: '/api/placeholder/1600/400',
+        landscapePicture: nature,
         bio: {
             introduction: [
                 'David Chen bridges theoretical physics with practical engineering applications in his innovative approach to STEM education. With a background in aerospace engineering and 12 years in education, he excels at making complex concepts tangible and engaging.',

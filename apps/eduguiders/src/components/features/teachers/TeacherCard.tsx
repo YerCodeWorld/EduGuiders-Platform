@@ -107,7 +107,7 @@ const TeacherCard = ({ teacher }: TeacherCardProps) => {
     };
 
     return (
-        <article
+        <div
             className={"teacher-card"}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
@@ -208,7 +208,7 @@ const TeacherCard = ({ teacher }: TeacherCardProps) => {
                     <span className="action-icon">↗</span>
                 </button>
             </div>
-        </article>
+        </div>
     );
 };
 

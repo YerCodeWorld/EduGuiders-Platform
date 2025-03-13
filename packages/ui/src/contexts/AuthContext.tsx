@@ -1,5 +1,6 @@
 // src/contexts/AuthContext.tsx
 import { createContext, useState, useEffect, useContext, ReactNode } from 'react';
+import photo from '../images/photo.jpeg';
 
 /**
  * USEROLES
@@ -27,7 +28,7 @@ export interface User {
     name: string;
     email: string;
     role: UserRole;
-    avatar?: string;  // uh... no. Will remove ASAP
+    avatar?: string;  // uh... no. Will remove ASAP | TWO WEEKS LATER: nevermind
     // I guess I can add more properties as desired
 }
 
@@ -89,7 +90,7 @@ const MOCK_USERS = [
         email: 'yahir.beras@example.com',
         password: 'password',
         role: UserRole.TEACHER,
-        avatar: '/avatars/teacher3.jpg'
+        avatar: photo
     },
     {
         id: '5',

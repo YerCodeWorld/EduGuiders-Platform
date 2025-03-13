@@ -1,9 +1,10 @@
 /* src/styles/components/profile/posts.css */
 
 .posts-section {
-    margin: 3rem 0;
     padding: 2rem 0;
-    background-color: #f8f9fa;
+    margin: 40px;
+    border-width: 100px;
+    background-color: white;
 }
 
 .posts-section .container {

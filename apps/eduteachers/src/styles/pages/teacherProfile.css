@@ -3,7 +3,8 @@
 .teacher-profile-wrapper {
     display: flex;
     flex-direction: column;
-    background-color: var(--light);
+    background-color: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(4px);
 }
 
 .profile-content-container {

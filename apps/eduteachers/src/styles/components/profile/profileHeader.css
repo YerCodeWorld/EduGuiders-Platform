@@ -9,6 +9,7 @@
     height: 30vh;
     min-height: 200px;
     background-size: cover;
+    border-bottom: 10px solid black;
     background-position: center;
 }
 

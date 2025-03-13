@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useCallback, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import river from '../../assets/images/river.jpg';
+import park from '../../assets/images/park.jpg';
 import nature from '../../assets/images/nature.jpg';
 import '../../styles/home/carouselBanner.css';
 
@@ -32,7 +33,7 @@ const CarouselBanner = ({ children }: CarouselBannerProps) => {
             backgroundImage: '/assets/images/banner1.jpg',
             buttonText: 'Get Started',
             buttonLink: '#explore',
-            image: river
+            image: park
         },
         {
             id: 2,
@@ -50,7 +51,7 @@ const CarouselBanner = ({ children }: CarouselBannerProps) => {
             backgroundImage: '/assets/images/banner3.jpg',
             buttonText: 'Explore Courses',
             buttonLink: '/cons/courses',
-            image: nature
+            image: park
         },
         {
             id: 3,

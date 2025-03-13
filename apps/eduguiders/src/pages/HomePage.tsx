@@ -8,6 +8,8 @@ import Tiles from '../components/home/Tiles';
 import Testimonials from '../components/home/Testimonials';
 import Statistics from '../components/home/Statistics';
 import TeacherCard, { Teacher } from '../components/features/teachers/TeacherCard';
+
+import mockData from '../../../eduteachers/src/data/mockData';
 import '../styles/pages/homePage.css';
 
 // Featured teachers for homepage display

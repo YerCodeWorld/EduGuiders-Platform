@@ -351,15 +351,6 @@ const Contact: React.FC<ContactProps> = ({
         <section id="contact" className="profile-section">
             <div className="section-header">
                 <h2>Contact Me</h2>
-                {isEditable && (
-                    <button
-                        className="edit-btn"
-                        onClick={onEditToggle}
-                        aria-label="Edit contact information"
-                    >
-                        <i className="fas fa-edit"></i> Edit Contact Info
-                    </button>
-                )}
             </div>
 
             <div className="contact-methods">

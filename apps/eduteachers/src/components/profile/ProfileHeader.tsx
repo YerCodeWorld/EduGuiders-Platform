@@ -125,7 +125,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
              */}
             <div
                 className="landscape-picture"
-                style={{ backgroundImage: `url(${isEditing ? editedLandscapePic : background})` }}
+                style={{ backgroundImage: `url(${isEditing ? background : background})` }}
             >
                 {isEditing && (
                     <button

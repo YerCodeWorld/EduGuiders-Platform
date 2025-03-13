@@ -79,13 +79,15 @@ const TeacherSelector: React.FC = () => {
                 <p>Browse our expert educators and find the right match for your learning needs</p>
             </div>
 
-            <div className="teacher-list-content">
-                {/* Filters sidebar */}
+            <div className="teacher-list-contenta">
+
+                {/* Filters sidebar
                 <TeacherFilters
                     subjects={Array.from(allSubjects)}
                     selectedSubject={filter}
                     onSubjectChange={handleFilterChange}
                 />
+                  */}
 
                 {/* Results section */}
                 <div className="teacher-results">

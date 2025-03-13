@@ -9,7 +9,7 @@ import '../../styles/components/profile/availability.css';
 interface AvailabilityProps {
     teacherId: string;
     availability: WeeklySchedule[];
-    isEditable: boolean;
+    isEditable: boolean | undefined;
 }
 
 // Available time slots for adding new slots
